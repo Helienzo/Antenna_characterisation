@@ -3,7 +3,8 @@ Created on Jan 19, 2018
 
 @author: enzo
 '''
-from gr_antenna import gr_antenna 
+#!/usr/bin/env python2
+from src.gr_antenna import gr_antenna 
 
 from gnuradio import blocks
 from gnuradio import eng_notation
