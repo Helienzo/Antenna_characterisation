@@ -17,6 +17,7 @@ import threading
 import time
 
 
+
 class myclass(gr_antenna):
     value = 0
     def __init__(self):
