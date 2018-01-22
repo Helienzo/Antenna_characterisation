@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Gr Antenna
-# Generated: Mon Jan 22 14:40:44 2018
+# Generated: Mon Jan 22 15:32:30 2018
 ##################################################
 
 if __name__ == '__main__':
@@ -65,7 +65,7 @@ class gr_antenna(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + "" )
+        self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + '' )
         self.rtlsdr_source_0.set_sample_rate(samp_rate)
         self.rtlsdr_source_0.set_center_freq(c_freq, 0)
         self.rtlsdr_source_0.set_freq_corr(0, 0)
@@ -75,7 +75,7 @@ class gr_antenna(gr.top_block, Qt.QWidget):
         self.rtlsdr_source_0.set_gain(10, 0)
         self.rtlsdr_source_0.set_if_gain(20, 0)
         self.rtlsdr_source_0.set_bb_gain(20, 0)
-        self.rtlsdr_source_0.set_antenna("", 0)
+        self.rtlsdr_source_0.set_antenna('', 0)
         self.rtlsdr_source_0.set_bandwidth(0, 0)
           
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
@@ -88,10 +88,12 @@ class gr_antenna(gr.top_block, Qt.QWidget):
         )
         self.qtgui_freq_sink_x_0.set_update_time(0.10)
         self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
+        self.qtgui_freq_sink_x_0.set_y_label('Relative Gain', 'dB')
         self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
         self.qtgui_freq_sink_x_0.enable_autoscale(False)
         self.qtgui_freq_sink_x_0.enable_grid(False)
         self.qtgui_freq_sink_x_0.set_fft_average(1.0)
+        self.qtgui_freq_sink_x_0.enable_axis_labels(True)
         self.qtgui_freq_sink_x_0.enable_control_panel(False)
         
         if not True:
@@ -100,8 +102,8 @@ class gr_antenna(gr.top_block, Qt.QWidget):
         if "complex" == "float" or "complex" == "msg_float":
           self.qtgui_freq_sink_x_0.set_plot_pos_half(not True)
         
-        labels = ["", "", "", "", "",
-                  "", "", "", "", ""]
+        labels = ['', '', '', '', '',
+                  '', '', '', '', '']
         widths = [1, 1, 1, 1, 1,
                   1, 1, 1, 1, 1]
         colors = ["blue", "red", "green", "black", "cyan",
@@ -143,15 +145,14 @@ class gr_antenna(gr.top_block, Qt.QWidget):
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
-
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.rtlsdr_source_0.set_sample_rate(self.samp_rate)
-        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 100e3, 1e6, firdes.WIN_HAMMING, 6.76))
         self.qtgui_freq_sink_x_0.set_frequency_range(self.c_freq, self.samp_rate)
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 100e3, 1e6, firdes.WIN_HAMMING, 6.76))
 
     def get_c_freq(self):
         return self.c_freq
