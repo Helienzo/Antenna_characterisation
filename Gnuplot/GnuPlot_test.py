@@ -7,4 +7,7 @@ def test():
 	g.title = "This is a test plot"
 	g('set data style linespoints')
 	g.plot([[0,1.1], [1,5.8], [2,3.3], [3,4.2]])
-	raw_imput("Press any button to continue")
+	raw_input("Press any button to continue")
+
+if __name__ == '__main__':
+    test()
