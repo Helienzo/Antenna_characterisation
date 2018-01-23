@@ -5,7 +5,8 @@ Created on Jan 19, 2018
 '''
 #!/usr/bin/env python2
 from src.gr_antenna import gr_antenna 
-from numpy import double
+from numpy import double, char
+from __builtin__ import str
 
 if __name__ == '__main__':
     import ctypes
@@ -58,7 +59,20 @@ class myclass(gr_antenna):
         self.connect((self.blocks_nlog10_ff_0, 0), (self.blocks_probe_signal_x_0, 0))
     
     def get_val(self):
-        print self.value    
+        return self.value
+        
+
+    def update_screen(self):
+        os.system('clear')
+        val_str = str(self.get_val())
+        print("\t**********************************************")
+        print("\t***  Antenna characteriastion aplication   ***")
+        print("\t*** current signal strengt: " + val_str + " *** ")
+        print("\t*** current ceter freq:     " + str(self.get_c_freq()) + "      **")
+        print("\t*** avilable commands: freq, val, quit     ***")
+        print("\t**********************************************")
+
+    
 
 def main(top_block_cls=myclass, options=None):
     
@@ -78,11 +92,12 @@ def main(top_block_cls=myclass, options=None):
     tb.show()
     print 'To init the measurment write start'
     while inp != quit: 
-        
+        time.sleep(0.01)
+        tb.update_screen()
         inp = raw_input('write command: ')
         if inp == 'val':
-            tb.get_val()
-        elif inp == 'start':     
+            print tb.get_val()
+        elif inp == 'start':
             print ''
         elif inp == 'freq':
             in_val = raw_input('Set center freq: ')  

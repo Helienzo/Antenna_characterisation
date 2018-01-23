@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Gr Antenna
-# Generated: Mon Jan 22 14:40:44 2018
+# Generated: Tue Jan 23 09:15:49 2018
 ##################################################
 
 if __name__ == '__main__':
@@ -59,7 +59,16 @@ class gr_antenna(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
+        self.xlaiting_decimation = xlaiting_decimation = 20
         self.samp_rate = samp_rate = 2e6
+        self.first_samprate = first_samprate = samp_rate/xlaiting_decimation
+        self.fft_1_decimation = fft_1_decimation = 10
+        self.second_samprate = second_samprate = first_samprate/fft_1_decimation
+        self.fft_2_decimation = fft_2_decimation = 5
+        self.third_samprate = third_samprate = second_samprate/fft_2_decimation
+        self.firdes_taps_xlating = firdes_taps_xlating = firdes.low_pass_2(1, samp_rate, first_samprate*0.5, first_samprate/4, 70, firdes.WIN_HAMMING, 6.76)
+        self.firdes_taps_fft_2 = firdes_taps_fft_2 = firdes.low_pass_2(1,second_samprate, third_samprate*0.5, third_samprate/4, 70, firdes.WIN_HAMMING, 6.76)
+        self.firdes_taps_fft_1 = firdes_taps_fft_1 = firdes.low_pass_2(1, first_samprate, second_samprate*0.5, second_samprate/4, 70, firdes.WIN_HAMMING, 6.76)
         self.c_freq = c_freq = 96.6e6
 
         ##################################################
@@ -82,7 +91,7 @@ class gr_antenna(gr.top_block, Qt.QWidget):
         	1024, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
         	c_freq, #fc
-        	samp_rate, #bw
+        	third_samprate, #bw
         	"", #name
         	1 #number of inputs
         )
@@ -119,10 +128,12 @@ class gr_antenna(gr.top_block, Qt.QWidget):
         
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
-        self.low_pass_filter_0 = filter.fir_filter_ccf(1, firdes.low_pass(
-        	1, samp_rate, 100e3, 1e6, firdes.WIN_HAMMING, 6.76))
+        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(xlaiting_decimation, (firdes_taps_xlating), 0, samp_rate)
+        self.fft_filter_xxx_1 = filter.fft_filter_ccc(fft_1_decimation, (firdes_taps_fft_1), 1)
+        self.fft_filter_xxx_1.declare_sample_delay(0)
+        self.fft_filter_xxx_0 = filter.fft_filter_ccc(fft_2_decimation, (firdes_taps_fft_2), 1)
+        self.fft_filter_xxx_0.declare_sample_delay(0)
         self.blocks_null_sink_1 = blocks.null_sink(gr.sizeof_float*1)
-        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_gr_complex*1)
         self.blocks_nlog10_ff_0 = blocks.nlog10_ff(10, 1, 0)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((10e-3, ))
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
@@ -133,10 +144,11 @@ class gr_antenna(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.blocks_multiply_const_vxx_0, 0))    
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_nlog10_ff_0, 0))    
         self.connect((self.blocks_nlog10_ff_0, 0), (self.blocks_null_sink_1, 0))    
-        self.connect((self.low_pass_filter_0, 0), (self.blocks_complex_to_mag_squared_0, 0))    
-        self.connect((self.low_pass_filter_0, 0), (self.qtgui_freq_sink_x_0, 0))    
-        self.connect((self.rtlsdr_source_0, 0), (self.blocks_null_sink_0, 0))    
-        self.connect((self.rtlsdr_source_0, 0), (self.low_pass_filter_0, 0))    
+        self.connect((self.fft_filter_xxx_0, 0), (self.blocks_complex_to_mag_squared_0, 0))    
+        self.connect((self.fft_filter_xxx_0, 0), (self.qtgui_freq_sink_x_0, 0))    
+        self.connect((self.fft_filter_xxx_1, 0), (self.fft_filter_xxx_0, 0))    
+        self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.fft_filter_xxx_1, 0))    
+        self.connect((self.rtlsdr_source_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))    
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "gr_antenna")
@@ -144,22 +156,90 @@ class gr_antenna(gr.top_block, Qt.QWidget):
         event.accept()
 
 
+    def get_xlaiting_decimation(self):
+        return self.xlaiting_decimation
+
+    def set_xlaiting_decimation(self, xlaiting_decimation):
+        self.xlaiting_decimation = xlaiting_decimation
+        self.set_first_samprate(self.samp_rate/self.xlaiting_decimation)
+
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.set_firdes_taps_xlating(firdes.low_pass_2(1, self.samp_rate, self.first_samprate*0.5, self.first_samprate/4, 70, firdes.WIN_HAMMING, 6.76))
+        self.set_first_samprate(self.samp_rate/self.xlaiting_decimation)
         self.rtlsdr_source_0.set_sample_rate(self.samp_rate)
-        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.samp_rate, 100e3, 1e6, firdes.WIN_HAMMING, 6.76))
-        self.qtgui_freq_sink_x_0.set_frequency_range(self.c_freq, self.samp_rate)
+
+    def get_first_samprate(self):
+        return self.first_samprate
+
+    def set_first_samprate(self, first_samprate):
+        self.first_samprate = first_samprate
+        self.set_firdes_taps_fft_1(firdes.low_pass_2(1, self.first_samprate, self.second_samprate*0.5, self.second_samprate/4, 70, firdes.WIN_HAMMING, 6.76))
+        self.set_firdes_taps_xlating(firdes.low_pass_2(1, self.samp_rate, self.first_samprate*0.5, self.first_samprate/4, 70, firdes.WIN_HAMMING, 6.76))
+        self.set_second_samprate(self.first_samprate/self.fft_1_decimation)
+
+    def get_fft_1_decimation(self):
+        return self.fft_1_decimation
+
+    def set_fft_1_decimation(self, fft_1_decimation):
+        self.fft_1_decimation = fft_1_decimation
+        self.set_second_samprate(self.first_samprate/self.fft_1_decimation)
+
+    def get_second_samprate(self):
+        return self.second_samprate
+
+    def set_second_samprate(self, second_samprate):
+        self.second_samprate = second_samprate
+        self.set_firdes_taps_fft_1(firdes.low_pass_2(1, self.first_samprate, self.second_samprate*0.5, self.second_samprate/4, 70, firdes.WIN_HAMMING, 6.76))
+        self.set_firdes_taps_fft_2(firdes.low_pass_2(1,self.second_samprate, self.third_samprate*0.5, self.third_samprate/4, 70, firdes.WIN_HAMMING, 6.76))
+        self.set_third_samprate(self.second_samprate/self.fft_2_decimation)
+
+    def get_fft_2_decimation(self):
+        return self.fft_2_decimation
+
+    def set_fft_2_decimation(self, fft_2_decimation):
+        self.fft_2_decimation = fft_2_decimation
+        self.set_third_samprate(self.second_samprate/self.fft_2_decimation)
+
+    def get_third_samprate(self):
+        return self.third_samprate
+
+    def set_third_samprate(self, third_samprate):
+        self.third_samprate = third_samprate
+        self.set_firdes_taps_fft_2(firdes.low_pass_2(1,self.second_samprate, self.third_samprate*0.5, self.third_samprate/4, 70, firdes.WIN_HAMMING, 6.76))
+        self.qtgui_freq_sink_x_0.set_frequency_range(self.c_freq, self.third_samprate)
+
+    def get_firdes_taps_xlating(self):
+        return self.firdes_taps_xlating
+
+    def set_firdes_taps_xlating(self, firdes_taps_xlating):
+        self.firdes_taps_xlating = firdes_taps_xlating
+        self.freq_xlating_fir_filter_xxx_0.set_taps((self.firdes_taps_xlating))
+
+    def get_firdes_taps_fft_2(self):
+        return self.firdes_taps_fft_2
+
+    def set_firdes_taps_fft_2(self, firdes_taps_fft_2):
+        self.firdes_taps_fft_2 = firdes_taps_fft_2
+        self.fft_filter_xxx_0.set_taps((self.firdes_taps_fft_2))
+
+    def get_firdes_taps_fft_1(self):
+        return self.firdes_taps_fft_1
+
+    def set_firdes_taps_fft_1(self, firdes_taps_fft_1):
+        self.firdes_taps_fft_1 = firdes_taps_fft_1
+        self.fft_filter_xxx_1.set_taps((self.firdes_taps_fft_1))
 
     def get_c_freq(self):
         return self.c_freq
 
     def set_c_freq(self, c_freq):
         self.c_freq = c_freq
+        self.qtgui_freq_sink_x_0.set_frequency_range(self.c_freq, self.third_samprate)
         self.rtlsdr_source_0.set_center_freq(self.c_freq, 0)
-        self.qtgui_freq_sink_x_0.set_frequency_range(self.c_freq, self.samp_rate)
 
 
 def main(top_block_cls=gr_antenna, options=None):
