@@ -20,6 +20,27 @@ def stuff(stdscr):
         win += "***  avilable commands: freq, val, record, setvalfreq, quit, origin ***\n"
         win += "**********************************************\n"
         return win
+    
+    def help_string(help_command):
+        if(help_command == ""):
+            win =  "These are the available commands:                       \n"
+            win += "                                                        \n"
+            win += "command:           explanation:                         \n"
+            win += "--------------------------------------------------------\n"
+            win += "record $number     records $number of measurements      \n"
+            win += "                   into measurement.txt                 \n"
+            win += "value              returns the current SDR value (in dBm)\n"
+            win += "quit               exits the current session            \n"
+        
+        elif(help_command == "quit"):
+            win = "quit: exits the current session and closes the           \n"
+            win += "terminal window                                         \n"
+        
+        elif(help_command = "value"):
+            win =   "returns the signal strength that the SDR-dongle is     \n"
+            win +=  "measuring in dBm                                       \n"
+            
+        return win
 
     # Initialization
     stdscr.clear()
@@ -31,6 +52,8 @@ def stuff(stdscr):
     command_history = ["1","2","3","4","5"] 
     nr = 0
     running = True
+    help = ""
+    help_command = ""
     while (running):
         
         
@@ -52,16 +75,23 @@ def stuff(stdscr):
                 nr = 0
             elif in_string == "quit":
                 running = False
+                
+            elif in_string == "help":
+                help = help_string(command_queue[1])
+                
             h_len = len(command_history)-1
             for i in range(0,h_len):
                 command_history[h_len-i] = command_history[h_len-1-i]
             command_history[0] ="Command history: " + in_string
             in_string = ""
-
+                
+        stdscr.addstr(18, 0, help)
         stdscr.addstr(13, 0,command_history[0])
         stdscr.addstr(14, 0,command_history[1])
         stdscr.addstr(15, 0,command_history[2])
         stdscr.addstr(12, 0,"# Write command$ "+in_string)
+        
+        
         #stdscr.addstr(13, 13,str(k))
         
         #win = curses.newwin(10,10,3,3)
