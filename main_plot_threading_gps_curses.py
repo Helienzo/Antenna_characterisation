@@ -235,65 +235,76 @@ class parser():
     def empty_que(self):
         self.command_que[:] = []
   
+def update_screen(stdscr,_cl,_pos,_myclass,_pars,_info_string):
 
-def application(stdscr,top_block_cls=myclass, options=None):
-
-    def update_screen(stdscr,_cl,_pos,_myclass,_pars,_info_string):
-
-        height, width = stdscr.getmaxyx()
-        
-        # Application main info screen 12 rows ------------------------------------------
-        win =  "**********************************************\n"
-        win += "***  Antenna characteriastion aplication   ***\n"
-        win += "***  Running time:          "  +str(_cl)+"            ***\n"
-        win += "***  current signal strengt: " + str(_myclass.get_val()) + " *** \n"
-        win += "***  current ceter freq:     " + str(_myclass.get_c_freq()) + "      **\n"
-        win += "***  current position X :     "+ str(_pos.get_X())  +" **\n"
-        win += "***  current position Y :     "+ str(_pos.get_Y())  +" **\n"
-        win += "***  current position Z :     "+ str(_pos.get_Z())  +" **\n"
-        win += "***  avilable commands: freq, val, record, setvalfreq, quit, origin ***\n"
-        win += "**********************************************\n"
-        win += "\n"
-        win += "----------------------------------------------------\n"
-        stdscr.addstr(0,0,win)
-        # -------------------------------------------------------------------------------
-
-        # Command history and info screen
-        avil_rows = height - 12 - 1
-        
-        command_history = _pars.get_history()
-        list_length = len(command_history)
-        str_length = len(_info_string)
-        str_length = int(math.ceil(double(str_length)/width)) # Number of rows in infostring
-        if str_length > 0:
-            _pars.add_history(_info_string.split('\n'))
-        if list_length > 0:
-            i = 0
-            if avil_rows > list_length:
-                i = list_length-1
-            else:
-                i = avil_rows
-            while i > -1:
-                i = i-1
-                tmp_str = command_history[list_length-2-i]
-                str_length = len(tmp_str)
-                str_length = int(math.ceil(double(str_length)/width))
-                if str_length > 1:
-                    i = i - str_length+1
-                stdscr.addstr(height-2-str_length-i, 0,str(tmp_str))
-        stdscr.addstr(height-1, 0,"# Write command$ "+_pars.get_full_string()) # Command input
+    height, width = stdscr.getmaxyx()
     
-    # Initialization of qt graphics
-    from distutils.version import StrictVersion
-    if StrictVersion(Qt.qVersion()) >= StrictVersion("4.5.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
-    qapp = Qt.QApplication(sys.argv)
+    # Application main info screen 12 rows ------------------------------------------
+    win =  "**********************************************\n"
+    win += "***  Antenna characteriastion aplication   ***\n"
+    win += "***  Running time:          "  +str(_cl)+"            ***\n"
+    win += "***  current signal strengt: " + str(_myclass.get_val()) + " *** \n"
+    win += "***  current ceter freq:     " + str(_myclass.get_c_freq()) + "      **\n"
+    win += "***  current position X :     "+ str(_pos.get_X())  +" **\n"
+    win += "***  current position Y :     "+ str(_pos.get_Y())  +" **\n"
+    win += "***  current position Z :     "+ str(_pos.get_Z())  +" **\n"
+    win += "***  avilable commands: freq, val, record, setvalfreq, quit, origin ***\n"
+    win += "**********************************************\n"
+    win += "\n"
+    win += "----------------------------------------------------\n"
+    stdscr.addstr(0,0,win)
+    # -------------------------------------------------------------------------------
+
+    # Command history and info screen
+    avil_rows = height - 12 - 1
     
-    # Start threads and create objects
-    tb = top_block_cls()
-    tb.start()
-    tb.show()
+    command_history = _pars.get_history()
+    list_length = len(command_history)
+    str_length = len(_info_string)
+    str_length = int(math.ceil(double(str_length)/width)) # Number of rows in infostring
+    if str_length > 0:
+        _pars.add_history(_info_string.split('\n'))
+    if list_length > 0:
+        i = 0
+        if avil_rows > list_length:
+            i = list_length-1
+        else:
+            i = avil_rows
+        while i > -1:
+            i = i-1
+            tmp_str = command_history[list_length-2-i]
+            str_length = len(tmp_str)
+            str_length = int(math.ceil(double(str_length)/width))
+            if str_length > 1:
+                i = i - str_length+1
+            stdscr.addstr(height-2-str_length-i, 0,str(tmp_str))
+    stdscr.addstr(height-1, 0,"# Write command$ "+_pars.get_full_string()) # Command input
+
+def help_string(help_command):
+    if(help_command == ""):
+        win =  "These are the available commands:                       \n"
+        win += "                                                        \n"
+        win += "command:           explanation:                         \n"
+        win += "--------------------------------------------------------\n"
+        win += "record $number     records $number of measurements      \n"
+        win += "                   into measurement.txt                 \n"
+        win += "value              returns the current SDR value (in dBm)\n"
+        win += "quit               exits the current session            \n"
+    
+    elif(help_command == "quit"):
+        win = "quit: exits the current session and closes the           \n"
+        win += "terminal window                                         \n"
+    
+    elif(help_command == "value"):
+        win =   "returns the signal strength that the SDR-dongle is     \n"
+        win +=  "measuring in dBm                                       \n"
+    else:
+        raise SyntaxError
+    return win
+
+
+def application(tb):
+    stdscr = curses.initscr()    
     rec = s_saver()
     pos = position()
 
@@ -331,37 +342,72 @@ def application(stdscr,top_block_cls=myclass, options=None):
                     else:
                         tid = 0  
                     pars.set_status_false()
-                    pars.empty_que() 
+                    pars.empty_que()
+
+                elif command_que[0] == 'help':
+
+                    if len(command_que) > 1:
+                        try: 
+                            info_string = help_string(str(command_que[1]))
+                        except SyntaxError:
+                            info_string = 'undefined help command: ' + str(command_que[1])
+                    else:
+                        info_string = help_string("")  
+                    pars.set_status_false()
+                    pars.empty_que()
+
                 elif command_que[0] == 'val':
-                    print tb.get_val()
+                    info_string = "Current value: " + str(tb.get_val())
                     pars.set_status_false()
                     pars.empty_que()       
                 #set the center frequency
                 elif command_que[0] == 'freq':
-                    in_val = raw_input('Set center freq: ')  
-                    tb.set_c_freq(double(in_val)*double(1000000))
+
+                    if len(command_que) > 1:
+                        try: 
+                            tb.set_c_freq(double(int(command_que[1]))*double(1000000))
+                        except ValueError:
+                            info_string = 'undefined value: ' + str(command_que[1])
+                    else:
+                        info_string = "freq command must have a value input" # Change to helpfunction
                     pars.set_status_false()
                     pars.empty_que()
                 #get the frequency
                 elif command_que[0] == 'get':
-                    print tb.get_c_freq()
+                    info_string = "Current center frequency: " + str(tb.get_c_freq()) + " Hz"
                     pars.set_status_false()
                     pars.empty_que()
+
                 elif command_que[0] == 'origin':
                     pos.set_origin()
                     pars.set_status_false()
                     pars.empty_que()
+
                 elif command_que[0] == 'setvalfreq':
-                    in_val = raw_input('Value frequency: ')
-                    tb.set_val_freq(int(in_val))
+
+                    if len(command_que) > 1:
+                        try: 
+                            tb.set_val_freq(int(command_que[1]))
+                        except ValueError:
+                            info_string = 'undefined value: ' + str(command_que[1])
+                    else:
+                        info_string = "setvalfreq command must have a value input" # Change to helpfunction
                     pars.set_status_false()
                     pars.empty_que()
+
 		        #record some values and then plot them with gnuplot
                 elif command_que[0] == 'record':
-                    noOfSamples = input('No. of samples to record: ')
-                    rec.recThread(noOfSamples,tb,pos)
+
+                    if len(command_que) > 1:
+                        try: 
+                            rec.recThread(int(command_que[1]),tb,pos)
+                        except ValueError:
+                            info_string = 'undefined value: ' + str(command_que[1])
+                    else:
+                        info_string = "record command must have a value input" # Change to helpfunction
                     pars.set_status_false()
                     pars.empty_que()
+
                 #quit the program
                 elif command_que[0] == "quit":
                     running = False
@@ -393,8 +439,21 @@ def application(stdscr,top_block_cls=myclass, options=None):
         stdscr.keypad(0)
     print "Done.\nExiting."
 
-def main():
-    curses.wrapper(application)
+def main(top_block_cls=myclass, options=None):
+    # Initialization of qt graphics
+    from distutils.version import StrictVersion
+    if StrictVersion(Qt.qVersion()) >= StrictVersion("4.5.0"):
+        style = gr.prefs().get_string('qtgui', 'style', 'raster')
+        Qt.QApplication.setGraphicsSystem(style)
+    qapp = Qt.QApplication(sys.argv)
+
+    # Start threads and create objects
+    tb = top_block_cls()
+    tb.start()
+    tb.show()
+
+    raw_input("press any key")
+    curses.wrapper(application(tb))
            
 if __name__ == '__main__':
     gpsp = GpsPoller()

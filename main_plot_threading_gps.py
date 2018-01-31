@@ -109,7 +109,6 @@ class position(GpsPoller):
     XfromO = 0
     YfromO = 0
     ZfromO = 0
-    R = 6.3781*100000
     theta = 0
     phi = 0
     alt = 0
@@ -149,12 +148,9 @@ class position(GpsPoller):
         thread.running = True
     
     def stop(self): #starts the thread that collects data in the background 
-        thread = threading.Thread(target=self.data, args = ())
-        thread.daemon = True
-        thread.start()
-        thread.running = False
+        print ""
 
-class s_saver(GpsPoller,myclass):
+class s_saver(myclass):
 
     def record(self,noOfSamples,my,pos):     #collects and plots signal strength data from the SDR-dongle
     	val = 0
@@ -211,8 +207,6 @@ def main(top_block_cls=myclass, options=None):
     tb.show()
     rec = s_saver()
     pos = position()
-    #pos.init()
-    print 'To init the measurment write start'
     try:
         while inp != quit: 
             time.sleep(0.01)

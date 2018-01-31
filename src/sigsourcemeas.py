@@ -3,8 +3,9 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Sigsourcemeas
-# Generated: Mon Jan 22 15:48:28 2018
+# Generated: Wed Jan 31 09:54:42 2018
 ##################################################
+import threading
 
 if __name__ == '__main__':
     import ctypes
@@ -56,6 +57,8 @@ class sigsourcemeas(gr.top_block, Qt.QWidget):
         self.settings = Qt.QSettings("GNU Radio", "sigsourcemeas")
         self.restoreGeometry(self.settings.value("geometry").toByteArray())
 
+        self._lock = threading.RLock()
+
         ##################################################
         # Variables
         ##################################################
@@ -68,7 +71,7 @@ class sigsourcemeas(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + '' )
+        self.rtlsdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + "" )
         self.rtlsdr_source_0.set_sample_rate(samp_rate)
         self.rtlsdr_source_0.set_center_freq(c_freq, 0)
         self.rtlsdr_source_0.set_freq_corr(0, 0)
@@ -78,7 +81,7 @@ class sigsourcemeas(gr.top_block, Qt.QWidget):
         self.rtlsdr_source_0.set_gain(10, 0)
         self.rtlsdr_source_0.set_if_gain(20, 0)
         self.rtlsdr_source_0.set_bb_gain(20, 0)
-        self.rtlsdr_source_0.set_antenna('', 0)
+        self.rtlsdr_source_0.set_antenna("", 0)
         self.rtlsdr_source_0.set_bandwidth(0, 0)
           
         self.qtgui_freq_sink_x_1 = qtgui.freq_sink_c(
@@ -91,12 +94,10 @@ class sigsourcemeas(gr.top_block, Qt.QWidget):
         )
         self.qtgui_freq_sink_x_1.set_update_time(0.10)
         self.qtgui_freq_sink_x_1.set_y_axis(0, 100)
-        self.qtgui_freq_sink_x_1.set_y_label('Relative Gain', 'dB')
         self.qtgui_freq_sink_x_1.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
         self.qtgui_freq_sink_x_1.enable_autoscale(False)
         self.qtgui_freq_sink_x_1.enable_grid(True)
         self.qtgui_freq_sink_x_1.set_fft_average(1.0)
-        self.qtgui_freq_sink_x_1.enable_axis_labels(True)
         self.qtgui_freq_sink_x_1.enable_control_panel(False)
         
         if not True:
@@ -105,8 +106,8 @@ class sigsourcemeas(gr.top_block, Qt.QWidget):
         if "complex" == "float" or "complex" == "msg_float":
           self.qtgui_freq_sink_x_1.set_plot_pos_half(not True)
         
-        labels = ['', '', '', '', '',
-                  '', '', '', '', '']
+        labels = ["", "", "", "", "",
+                  "", "", "", "", ""]
         widths = [1, 1, 1, 1, 1,
                   1, 1, 1, 1, 1]
         colors = ["blue", "red", "green", "black", "cyan",
@@ -134,12 +135,10 @@ class sigsourcemeas(gr.top_block, Qt.QWidget):
         )
         self.qtgui_freq_sink_x_0.set_update_time(0.10)
         self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
-        self.qtgui_freq_sink_x_0.set_y_label('Relative Gain', 'dB')
         self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
         self.qtgui_freq_sink_x_0.enable_autoscale(False)
         self.qtgui_freq_sink_x_0.enable_grid(False)
         self.qtgui_freq_sink_x_0.set_fft_average(1.0)
-        self.qtgui_freq_sink_x_0.enable_axis_labels(True)
         self.qtgui_freq_sink_x_0.enable_control_panel(False)
         
         if not True:
@@ -148,8 +147,8 @@ class sigsourcemeas(gr.top_block, Qt.QWidget):
         if "complex" == "float" or "complex" == "msg_float":
           self.qtgui_freq_sink_x_0.set_plot_pos_half(not True)
         
-        labels = ['', '', '', '', '',
-                  '', '', '', '', '']
+        labels = ["", "", "", "", "",
+                  "", "", "", "", ""]
         widths = [1, 1, 1, 1, 1,
                   1, 1, 1, 1, 1]
         colors = ["blue", "red", "green", "black", "cyan",
@@ -195,44 +194,50 @@ class sigsourcemeas(gr.top_block, Qt.QWidget):
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
+
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
-        self.samp_rate = samp_rate
-        self.rtlsdr_source_0.set_sample_rate(self.samp_rate)
-        self.qtgui_freq_sink_x_1.set_frequency_range(self.c_freq, self.samp_rate/self.dec_1/self.dec_2/self.dec_3)
-        self.qtgui_freq_sink_x_0.set_frequency_range(self.c_freq, self.samp_rate)
+        with self._lock:
+            self.samp_rate = samp_rate
+            self.qtgui_freq_sink_x_0.set_frequency_range(self.c_freq, self.samp_rate)
+            self.qtgui_freq_sink_x_1.set_frequency_range(self.c_freq, self.samp_rate/self.dec_1/self.dec_2/self.dec_3)
+            self.rtlsdr_source_0.set_sample_rate(self.samp_rate)
 
     def get_dec_3(self):
         return self.dec_3
 
     def set_dec_3(self, dec_3):
-        self.dec_3 = dec_3
-        self.qtgui_freq_sink_x_1.set_frequency_range(self.c_freq, self.samp_rate/self.dec_1/self.dec_2/self.dec_3)
+        with self._lock:
+            self.dec_3 = dec_3
+            self.qtgui_freq_sink_x_1.set_frequency_range(self.c_freq, self.samp_rate/self.dec_1/self.dec_2/self.dec_3)
 
     def get_dec_2(self):
         return self.dec_2
 
     def set_dec_2(self, dec_2):
-        self.dec_2 = dec_2
-        self.qtgui_freq_sink_x_1.set_frequency_range(self.c_freq, self.samp_rate/self.dec_1/self.dec_2/self.dec_3)
+        with self._lock:
+            self.dec_2 = dec_2
+            self.qtgui_freq_sink_x_1.set_frequency_range(self.c_freq, self.samp_rate/self.dec_1/self.dec_2/self.dec_3)
 
     def get_dec_1(self):
         return self.dec_1
 
     def set_dec_1(self, dec_1):
-        self.dec_1 = dec_1
-        self.qtgui_freq_sink_x_1.set_frequency_range(self.c_freq, self.samp_rate/self.dec_1/self.dec_2/self.dec_3)
+        with self._lock:
+            self.dec_1 = dec_1
+            self.qtgui_freq_sink_x_1.set_frequency_range(self.c_freq, self.samp_rate/self.dec_1/self.dec_2/self.dec_3)
 
     def get_c_freq(self):
         return self.c_freq
 
     def set_c_freq(self, c_freq):
-        self.c_freq = c_freq
-        self.rtlsdr_source_0.set_center_freq(self.c_freq, 0)
-        self.qtgui_freq_sink_x_1.set_frequency_range(self.c_freq, self.samp_rate/self.dec_1/self.dec_2/self.dec_3)
-        self.qtgui_freq_sink_x_0.set_frequency_range(self.c_freq, self.samp_rate)
+        with self._lock:
+            self.c_freq = c_freq
+            self.qtgui_freq_sink_x_0.set_frequency_range(self.c_freq, self.samp_rate)
+            self.qtgui_freq_sink_x_1.set_frequency_range(self.c_freq, self.samp_rate/self.dec_1/self.dec_2/self.dec_3)
+            self.rtlsdr_source_0.set_center_freq(self.c_freq, 0)
 
 
 def main(top_block_cls=sigsourcemeas, options=None):
@@ -244,7 +249,6 @@ def main(top_block_cls=sigsourcemeas, options=None):
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
-    tb.start()
     tb.show()
 
     def quitting():
