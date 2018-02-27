@@ -34,5 +34,5 @@ class Barometer():
     
     def calcAltitude(self):
         pressDiff = (self.readPressure/1000)*(1/101.325) #difference between avarage pressure at sea level and current pressure [kPa]
-        alt = math.log(pressDiff)*(-1)*(8.3143*288.15)/(0.02896*9.82)
+        alt = math.log(pressDiff)*(-1)*(8.3143*288.15)/(0.02896*9.82) #calculating altitude according to general barometric formula
         return alt
