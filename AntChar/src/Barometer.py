@@ -10,15 +10,24 @@ class Barometer():
     	while baro.running:
     	    baro.next()
 
+    def readPressure(self):
+        return self.read_pressure()
+        
+    def readTemperature(self):
+        return self.read_temperature()
+    
+    def readHumidity(self):
+        return self.read_humidity()
+        
     def printPressure(self)
-        pascals = self.read_pressure()
+        pascals = self.readPressure()
         hectopascals = pascals / 100
         print 'Pressure  = {0:0.2f} hPa'.format(hectopascals)
 
     def printTemperature(self)
-        degrees = self.read_temperature()
-        print 'Temp      = {0:0.3f} deg C'.format(degrees)
+        degrees = self.readTemperature()
+        print 'Temp      = {0:0.3f} deg C'.fSormat(degrees)
         
     def printHumidity(self)
-        humidity = self.read_humidity()
+        humidity = self.readHumidity()
         print 'Humidity  = {0:0.2f} %'.format(humidity)
