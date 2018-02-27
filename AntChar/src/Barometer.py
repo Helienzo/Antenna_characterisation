@@ -11,6 +11,18 @@ class Barometer(threading.Thread):
     	self.running = True #setting the thread running to true
 
     def run(self):
-    	global baro
     	while baro.running:
     	    baro.next()
+
+    def printPressure(self)
+        pascals = self.read_pressure()
+        hectopascals = pascals / 100
+        print 'Pressure  = {0:0.2f} hPa'.format(hectopascals)
+
+    def printTemperature(self)
+        degrees = self.read_temperature()
+        print 'Temp      = {0:0.3f} deg C'.format(degrees)
+        
+    def printHumidity(self)
+        humidity = self.read_humidity()
+        print 'Humidity  = {0:0.2f} %'.format(humidity)
