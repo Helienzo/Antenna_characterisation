@@ -1,19 +1,11 @@
 from src import *
-
 import wiringpi2 as wpi
-import time
 
 class Antenna(threading.Thread)
     
     def __init__(self) 
-        threading.Thread.__init__(self)
         wpi.wiringPiSetup()
         self.currLoop = 0    #stores what loop is currently active 
-    	global ant #bring it in scope
-    	self.current_value = None
-    	self.running = True #setting the thread running to true
-    
-    def run(self)
         wpi.pinMode(2,0) #selects GPIO #21 on the odroid board
         wpi.pinMode(0,0) #selects GPIO #22 on the odroid board
 
