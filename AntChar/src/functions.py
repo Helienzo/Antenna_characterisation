@@ -13,7 +13,8 @@ def update_screen(stdscr,_cl,_pos,_radio,_pars,_info_string):
     win += "***  current position X :     "+ str(_pos.get_X())  +" **\n"
     win += "***  current position Y :     "+ str(_pos.get_Y())  +" **\n"
     win += "***  current position Z :     "+ str(_pos.get_Z())  +" **\n"
-    win += "***  avilable commands: freq, val, record, setvalfreq, quit, origin ***\n"
+    win += "***  avilable commands: freq, val, setvalfreq, quit, origin ***\n"
+    win += "***  recordtime, recordsamples, plot ***\n"
     win += "**********************************************\n"
     win += "\n"
     win += "----------------------------------------------------\n"
@@ -51,15 +52,30 @@ def help_string(help_command):
         win += "                                                        \n"
         win += "command:           explanation:                         \n"
         win += "--------------------------------------------------------\n"
-        win += "record $number     records $number of measurements      \n"
+        win += "recordsamples $filename.txt $number, records $number of \n"
+        win += "measurements with filename $filename.txt                \n"
+        win += "recordtime $filename.txt $time, records the specified   \n"
+        win += "time $time in minutes with filename $filename.txt       \n"
         win += "                   into measurement.txt                 \n"
-        win += "value              returns the current SDR value (in dBm)\n"
+        win += "value             returns the current SDR value (in dBm)\n"
         win += "quit               exits the current session            \n"
     
     elif(help_command == "quit"):
         win = "quit: exits the current session and closes the           \n"
         win += "terminal window                                         \n"
-    
+
+    elif(help_command == "plot"):
+        win = "plot $filename.txt plots the recorded file with name     \n"
+        win +="$filename.txt                                            \n"
+
+    elif(help_command == "recordsamples"):
+        win += "recordsamples $filename.txt $number, records $number of \n"
+        win += "measurements with filename $filename.txt                \n"
+
+    elif(help_command == "recordtime"):
+        win += "recordtime $filename.txt $time, records the specified   \n"
+        win += "time $time in minutes with filename $filename.txt       \n"
+
     elif(help_command == "value"):
         win =   "returns the signal strength that the SDR-dongle is     \n"
         win +=  "measuring in dBm                                       \n"

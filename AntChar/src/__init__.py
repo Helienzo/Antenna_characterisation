@@ -1,7 +1,10 @@
-
+#!/home/odroid/prefix/default/lib python2
 #source /home/odroid/prefix/default/setup_env.sh
 import math
-from numpy import double, char
+import numpy as np
+from numpy import *
+#import matplotlib.pyplot as plt
+#import mpl_toolkits.mplot3d.axes3d as axes3d
 from __builtin__ import str
 from PyQt4 import Qt
 from gnuradio import blocks
@@ -19,12 +22,16 @@ import sip
 import sys
 import time
 import os
+import wiringpi2 as wpi
 from gps import *
+from Adafruit_BME280 import *
 import curses
 from gr_antenna import gr_antenna
 from parser import parser
 
+from Barometer import Barometer
 from s_saver import s_saver
+from Antenna import Antenna
 from functions import *
 from GpsPoller import *
 from radio import radio

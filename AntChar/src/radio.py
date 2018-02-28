@@ -1,16 +1,15 @@
 from src import *
-
 class radio(gr_antenna):
     value = 0
     freq = 1000
     rec = s_saver()
 
-    def __init__(self,qapp):
+    def __init__(self,qapp,ax1):
         #gr_antenna.__init__(self)
         super(radio,self).__init__()
         self.variable_function_probe_0 = variable_function_probe_0 = 0
         self.blocks_probe_signal_x_0 = blocks.probe_signal_f()
-
+        
         def _variable_function_probe_0_probe():
             while True:
                 val = self.blocks_probe_signal_x_0.level()
@@ -39,7 +38,7 @@ class radio(gr_antenna):
             tid = 0
             running = True # Controll of main loop
             pars = parser()
-
+            
             try:
                 
                 while (running):
@@ -117,15 +116,41 @@ class radio(gr_antenna):
                             pars.empty_que()
 
 	                    #record some values and then plot them with gnuplot
-                        elif command_que[0] == 'record':
+                        elif command_que[0] == 'recordsamples':
 
-                            if len(command_que) > 1:
+                            if len(command_que) > 2:
                                 try: 
-                                    rec.recThread(int(command_que[1]),self,pos)
+                                    rec.recThread_samples(str(command_que[1]),int(command_que[2]),self,pos)
                                 except ValueError:
-                                    info_string = 'undefined value: ' + str(command_que[1])
+                                    info_string = 'undefined value: ' + str(command_que[2])
                             else:
-                                info_string = "record command must have a value input" # Change to helpfunction
+                                info_string = "record command must have a value and name input" # Change to helpfunction
+                            pars.set_status_false()
+                            pars.empty_que()
+
+                        elif command_que[0] == 'recordtime':
+
+                            if len(command_que) > 2:
+                                try: 
+                                    rec.recThread_time(str(command_que[1]),float(command_que[2]),self,pos)
+                                except ValueError:
+                                    info_string = 'undefined value: ' + str(command_que[2])
+                            else:
+                                info_string = "record command must have a value and name input" # Change to helpfunction
+                            pars.set_status_false()
+                            pars.empty_que()
+
+                        elif command_que[0] == "plot":
+                            if len(command_que) > 1:
+                                if command_que[1] == "clear":
+                                    ax1.cla()
+                                else:
+                                    try: 
+                                        rec.plotter(str(command_que[1]),ax1)
+                                    except IOError:
+                                        info_string = 'undefined filename: ' + str(command_que[1])
+                            else:
+                                info_string = "Specify a filename" # Change to helpfunction
                             pars.set_status_false()
                             pars.empty_que()
 
