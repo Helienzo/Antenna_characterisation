@@ -33,7 +33,9 @@ GR_PYTHON_INSTALL(
     __init__.py
     dbm_correction_py_ff.py
     AF_finder.py
-    E_field_calc_ff.py DESTINATION ${GR_PYTHON_DIR}/antchar
+    E_field_calc_ff.py
+    Antenna_loop_ID.py
+    Antenna_loop_ID_ff.py DESTINATION ${GR_PYTHON_DIR}/antchar
 )
 
 install(FILES AF_data.txt DESTINATION ${GR_PYTHON_DIR}/antchar)
@@ -46,3 +48,5 @@ set(GR_TEST_TARGET_DEPS gnuradio-antchar)
 set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
 GR_ADD_TEST(qa_dbm_correction_py_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_dbm_correction_py_ff.py)
 GR_ADD_TEST(qa_E_field_calc_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_E_field_calc_ff.py)
+GR_ADD_TEST(qa_Antenna_loop_ID ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_Antenna_loop_ID.py)
+GR_ADD_TEST(qa_Antenna_loop_ID_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_Antenna_loop_ID_ff.py)

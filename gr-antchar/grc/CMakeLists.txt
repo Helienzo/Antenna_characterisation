@@ -19,5 +19,7 @@
 
 install(FILES
     antchar_dbm_correction_py_ff.xml
-    antchar_E_field_calc_ff.xml DESTINATION share/gnuradio/grc/blocks
+    antchar_E_field_calc_ff.xml
+    antchar_Antenna_loop_ID.xml
+    antchar_Antenna_loop_ID_ff.xml DESTINATION share/gnuradio/grc/blocks
 )
