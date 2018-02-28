@@ -21,13 +21,14 @@
 
 import numpy
 from gnuradio import gr
-import Antenna as ant
+#import Antenna as ant
 
 class Antenna_loop_ID_ff(gr.sync_block):
     """
     docstring for block Antenna_loop_ID
     """
     def __init__(self):
+        ant = Antenna()
         gr.sync_block.__init__(self,
             name="Antenna_loop_ID_ff",
             in_sig=[numpy.float32],

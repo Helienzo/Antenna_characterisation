@@ -1,7 +1,7 @@
 from src import *
 import wiringpi2 as wpi
 
-class Antenna(threading.Thread)
+class Antenna()
     
     def __init__(self) 
         wpi.wiringPiSetup()
