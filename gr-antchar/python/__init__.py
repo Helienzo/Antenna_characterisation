@@ -33,4 +33,6 @@ except ImportError:
 # import any pure python here
 from dbm_correction_py_ff import dbm_correction_py_ff
 from E_field_calc_ff import E_field_calc_ff
+from Antenna_loop_ID import Antenna_loop_ID
+from Antenna_loop_ID_ff import Antenna_loop_ID_ff
 #
