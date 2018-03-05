@@ -10,7 +10,7 @@ class radio(gr_antenna):
         self.rec_event = threading.Event() # Threading event for recoding or not
         self.value = [0] # measurment value
         self.rec = s_saver(self.value_event,self.value,self.rec_event)
-        self.testblocks_event_sink_f_0 = testblocks.event_sink_f(self.value_event,self.value) # Sets event when new value is ready
+        self.antchar_event_sink_f_0 = antchar.event_sink_f(self.value_event, self.value) # Sets event when new value is ready
         
         def app():
             stdscr = curses.initscr()
@@ -187,7 +187,7 @@ class radio(gr_antenna):
                 qapp.exit()
             print "Done.\nExiting."
 
-        self.connect((self.antchar_antenna_polarization_adder_ff_0, 0), (self.testblocks_event_sink_f_0, 0))
+        self.connect((self.antchar_antenna_polarization_adder_ff_0, 0), (self.antchar_event_sink_f_0, 0))
         app_thread =threading.Thread(target=app)
         app_thread.deamon = True
         app_thread.start()
