@@ -1,7 +1,7 @@
 from src import *
 class radio(gr_antenna):
     value = 0
-    freq = 1000
+    freq = 30
     rec = s_saver()
 
     def __init__(self,qapp,ax1):
@@ -199,7 +199,7 @@ class radio(gr_antenna):
         _variable_function_probe_0_thread = threading.Thread(target=_variable_function_probe_0_probe)
         _variable_function_probe_0_thread.daemon = True
         _variable_function_probe_0_thread.start()
-        self.connect((self.blocks_moving_average_xx_0, 0), (self.blocks_probe_signal_x_0, 0))
+        self.connect((self.antchar_antenna_polarization_adder_ff_0, 0), (self.blocks_probe_signal_x_0, 0))
         app_thread =threading.Thread(target=app)
         app_thread.deamon = True
         app_thread.start()

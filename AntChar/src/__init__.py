@@ -31,7 +31,6 @@ from parser import parser
 
 from Barometer import Barometer
 from s_saver import s_saver
-from Antenna import Antenna
 from functions import *
 from GpsPoller import *
 from radio import radio

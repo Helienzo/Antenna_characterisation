@@ -16,13 +16,13 @@ class s_saver():
             Y = pos.get_Y()
             Z = pos.get_Z()
             myFile.write("{0} {1} {2} {3} {4} \n".format(x, val, X, Y, Z))    #write the data to file
-            time.sleep(0.1)                            #sleeps for a while so that the SDR has time to change value.
+            time.sleep(0.033)                            #sleeps for a while so that the SDR has time to change value.
         myFile.close()                                  #close and save the file
         #-----------------------------------------__#
 
     def record_time(self,noOfTime,filename,my,pos):     #collects and plots signal strength data from the SDR-dongle
     	val = 0
-        paus_time = 0.1
+        paus_time = 0.033
         myFile = open(str(filename), "w")
         #------------------------------------------#
         
