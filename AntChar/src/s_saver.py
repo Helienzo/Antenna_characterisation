@@ -4,37 +4,54 @@ import math
 import csv
 class s_saver():
 
+    def __init__(self,value_event,value,rec_event):
+        self.value_event = value_event  # threading event from gnuradio, is set when new value is aviable
+        self.rec_event = rec_event # recording event
+        self.value = value  #List that contains the gnuradio calculated value
+
     def record_samples(self,noOfSamples,filename,my,pos):     #collects and plots signal strength data from the SDR-dongle
-    	val = 0
+        val = 0
+        self.rec_event.set()
         myFile = open(str(filename), "w")
         #------------------------------------------#
         
         #----------RECORDING LOOP--------------------#
         for x in range(0, noOfSamples):
-            val = my.get_val() #collect the measurement data
+            self.value_event.wait() # Wait untill new value is available
+            val = self.value[0] #collect the measurement data
             X = pos.get_X()
             Y = pos.get_Y()
             Z = pos.get_Z()
             myFile.write("{0} {1} {2} {3} {4} \n".format(x, val, X, Y, Z))    #write the data to file
-            time.sleep(0.1)                            #sleeps for a while so that the SDR has time to change value.
+            self.value_event.clear() # Resets the flag.
         myFile.close()                                  #close and save the file
+        self.rec_event.clear()
         #-----------------------------------------__#
 
     def record_time(self,noOfTime,filename,my,pos):     #collects and plots signal strength data from the SDR-dongle
-    	val = 0
-        paus_time = 0.1
+        self.rec_event.set()
+        E_time = 0  # Elapsed time
+        C_time = 0 # Current time
+        S_time = time.time() # Start time   	
+        noOfTime = noOfTime*60 # From minutes to seconds        
+        val = 0
         myFile = open(str(filename), "w")
         #------------------------------------------#
         
         #----------RECORDING LOOP--------------------#
-        for x in range(0,int(noOfTime*60.0/paus_time)):
+        while E_time < noOfTime
+            self.value_event.wait() # Wait untill new value is available
             val = my.get_val() #collect the measurement data
             X = pos.get_X()
             Y = pos.get_Y()
             Z = pos.get_Z()
             myFile.write("{0} {1} {2} {3} {4} \n".format(x, val, X, Y, Z))    #write the data to file
-            time.sleep(paus_time)   #sleeps for a while so that the SDR has time to change value.
+            C_time = time.time() # Get current time
+            E_time = C_time - S_time # Calculate elapsed time
+            self.value_event.clear() # Resets the flag.
+
         myFile.close()                                  #close and save the file
+        self.rec_event.clear()
 
     def plotter(self,filename,ax1):
         x = []

@@ -1,28 +1,19 @@
 from src import *
 class radio(gr_antenna):
-    value = 0
     freq = 1000
-    rec = s_saver()
+    
 
     def __init__(self,qapp,ax1):
         #gr_antenna.__init__(self)
         super(radio,self).__init__()
-        self.variable_function_probe_0 = variable_function_probe_0 = 0
-        self.blocks_probe_signal_x_0 = blocks.probe_signal_f()
-        
-        def _variable_function_probe_0_probe():
-            while True:
-                val = self.blocks_probe_signal_x_0.level()
-                self.value = val
-                try:
-                    self.set_variable_function_probe_0(val)
-                except AttributeError:
-                    pass
-                time.sleep(1.0 / (self.freq))
+        self.value_event = threading.Event() # Threading event for new value
+        self.rec_event = threading.Event() # Threading event for recoding or not
+        self.value = [0] # measurment value
+        self.rec = s_saver(self.value_event,self.value,self.rec_event)
+        self.testblocks_event_sink_f_0 = testblocks.event_sink_f(self.value_event,self.value) # Sets event when new value is ready
         
         def app():
-            stdscr = curses.initscr()    
-            rec = s_saver()
+            stdscr = curses.initscr()
             pos = position()
             #raw_input("press any key")
             # Initialization of curses application
@@ -120,7 +111,7 @@ class radio(gr_antenna):
 
                             if len(command_que) > 2:
                                 try: 
-                                    rec.recThread_samples(str(command_que[1]),int(command_que[2]),self,pos)
+                                    self.rec.recThread_samples(str(command_que[1]),int(command_que[2]),self,pos)
                                 except ValueError:
                                     info_string = 'undefined value: ' + str(command_que[2])
                             else:
@@ -132,7 +123,7 @@ class radio(gr_antenna):
 
                             if len(command_que) > 2:
                                 try: 
-                                    rec.recThread_time(str(command_que[1]),float(command_que[2]),self,pos)
+                                    self.rec.recThread_time(str(command_que[1]),float(command_que[2]),self,pos)
                                 except ValueError:
                                     info_string = 'undefined value: ' + str(command_que[2])
                             else:
@@ -146,7 +137,7 @@ class radio(gr_antenna):
                                     ax1.cla()
                                 else:
                                     try: 
-                                        rec.plotter(str(command_que[1]),ax1)
+                                        self.rec.plotter(str(command_que[1]),ax1)
                                     except IOError:
                                         info_string = 'undefined filename: ' + str(command_que[1])
                             else:
@@ -175,7 +166,7 @@ class radio(gr_antenna):
                             pars.set_status_false()
                             pars.empty_que()
                     
-                    update_screen(stdscr,tid,pos,self,pars,info_string)
+                    update_screen(stdscr,tid,pos,self,pars,info_string,self.rec_event)
                     info_string = ""
                     stdscr.refresh()
                     
@@ -196,16 +187,13 @@ class radio(gr_antenna):
                 qapp.exit()
             print "Done.\nExiting."
 
-        _variable_function_probe_0_thread = threading.Thread(target=_variable_function_probe_0_probe)
-        _variable_function_probe_0_thread.daemon = True
-        _variable_function_probe_0_thread.start()
-        self.connect((self.blocks_moving_average_xx_0, 0), (self.blocks_probe_signal_x_0, 0))
+        self.connect((self.blocks_moving_average_xx_0, 0), (self.testblocks_event_sink_f_0, 0))
         app_thread =threading.Thread(target=app)
         app_thread.deamon = True
         app_thread.start()
 
     def get_val(self):
-        return self.value
+        return self.value[0]
 
     def set_val_freq(self, _freq):
         self.freq = _freq

@@ -1,8 +1,13 @@
 from src import *
 
-def update_screen(stdscr,_cl,_pos,_radio,_pars,_info_string):
+def update_screen(stdscr,_cl,_pos,_radio,_pars,_info_string,rec_event):
 
     height, width = stdscr.getmaxyx()
+    record_string = ""
+    if rec_event.isSet():
+        record_string = "Recording"
+    else:
+        record_string = "Not active"
     
     # Application main info screen 12 rows ------------------------------------------
     win =  "**********************************************\n"
@@ -13,6 +18,7 @@ def update_screen(stdscr,_cl,_pos,_radio,_pars,_info_string):
     win += "***  current position X :     "+ str(_pos.get_X())  +" **\n"
     win += "***  current position Y :     "+ str(_pos.get_Y())  +" **\n"
     win += "***  current position Z :     "+ str(_pos.get_Z())  +" **\n"
+    win += "***  Recording status :       "+ record_string + "  **\n"
     win += "***  avilable commands: freq, val, setvalfreq, quit, origin ***\n"
     win += "***  recordtime, recordsamples, plot ***\n"
     win += "**********************************************\n"
@@ -22,7 +28,7 @@ def update_screen(stdscr,_cl,_pos,_radio,_pars,_info_string):
     # -------------------------------------------------------------------------------
 
     # Command history and info screen
-    avil_rows = height - 12 - 1
+    avil_rows = height - 14 - 1 # 14 rows occupied by information at top of string
     
     command_history = _pars.get_history()
     list_length = len(command_history)
