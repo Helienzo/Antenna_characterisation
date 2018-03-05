@@ -40,6 +40,13 @@ class E_field_calc_ff(gr.sync_block):
         in0 = input_items[0]
         out = output_items[0]
         afE,afH = af.finder(self.freq)
+        
+        micV = in0 + 107 #dBµV
+        micVm = afE + micV #dBµV/m
+        
+        micA = in0 + 73 #dBµA
+        micAm = afH + micA #dBµA/m
+        
         E = 20*numpy.log10(numpy.sqrt(in0*float(self.res)/1000.0))+120+afE # dBuV/m
         H = 20*numpy.log10(numpy.sqrt(in0*float(self.res)/1000.0))+120+afH # dBuA/m
         P = E+H #dBuW/m²
