@@ -1,7 +1,7 @@
 from src import *
 class radio(gr_antenna):
-    freq = 1000
-    
+
+    freq = 30
 
     def __init__(self,qapp,ax1):
         #gr_antenna.__init__(self)
@@ -187,7 +187,7 @@ class radio(gr_antenna):
                 qapp.exit()
             print "Done.\nExiting."
 
-        self.connect((self.blocks_moving_average_xx_0, 0), (self.testblocks_event_sink_f_0, 0))
+        self.connect((self.antchar_antenna_polarization_adder_ff_0, 0), (self.testblocks_event_sink_f_0, 0))
         app_thread =threading.Thread(target=app)
         app_thread.deamon = True
         app_thread.start()
