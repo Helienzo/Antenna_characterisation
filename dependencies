@@ -13,3 +13,4 @@ osmosdr
 rtl-sdr
 wiringPI (odroid)
 gpsd
+#source /home/odroid/prefix/default/setup_env.sh

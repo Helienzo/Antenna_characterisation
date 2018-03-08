@@ -31,7 +31,7 @@ def main(top_block_cls=radio, options=None):
     tb = top_block_cls(qapp,ax1)
     tb.start()
     tb.show()
-    plt.show()
+    #plt.show()
     def quitting():
         tb.stop()
         tb.wait()

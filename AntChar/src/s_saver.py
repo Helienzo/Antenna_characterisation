@@ -19,10 +19,11 @@ class s_saver():
         for x in range(0, noOfSamples):
             self.value_event.wait() # Wait untill new value is available
             val = self.value[0] #collect the measurement data
+            T = time.time()
             X = pos.get_X()
             Y = pos.get_Y()
             Z = pos.get_Z()
-            myFile.write("{0} {1} {2} {3} {4} \n".format(x, val, X, Y, Z))    #write the data to file
+            myFile.write("{0} {1} {2} {3} {4} {5} \n".format(x+1, T, val, X, Y, Z))    #write the data to file
             self.value_event.clear() # Resets the flag.
         myFile.close()                                  #close and save the file
         self.rec_event.clear()
@@ -35,19 +36,23 @@ class s_saver():
         S_time = time.time() # Start time   	
         noOfTime = noOfTime*60 # From minutes to seconds        
         val = 0
+        x = 0
         myFile = open(str(filename), "w")
         #------------------------------------------#
         
         #----------RECORDING LOOP--------------------#
-        while E_time < noOfTime
+        while E_time < noOfTime:
             self.value_event.wait() # Wait untill new value is available
-            val = my.get_val() #collect the measurement data
+            x += 1 # Amount of samples
+            val = self.value[0] #collect the measurement data
+            T = time.time()
             X = pos.get_X()
             Y = pos.get_Y()
             Z = pos.get_Z()
-            myFile.write("{0} {1} {2} {3} {4} \n".format(x, val, X, Y, Z))    #write the data to file
+            myFile.write("{0} {1} {2} {3} {4} {5} \n".format(x, T, val, X, Y, Z))    #write the data to file
             C_time = time.time() # Get current time
             E_time = C_time - S_time # Calculate elapsed time
+            #print E_time
             self.value_event.clear() # Resets the flag.
 
         myFile.close()                                  #close and save the file
@@ -60,9 +65,9 @@ class s_saver():
         myfile = open(str(filename), "r")
         for line in myfile:
             coord = line.split(" ")
-            x.append(float(coord[2]))
-            y.append(float(coord[3]))
-            z.append(float(coord[4]))
+            x.append(float(coord[3]))
+            y.append(float(coord[4]))
+            z.append(float(coord[5]))
         plot = ax1.plot(x,y,z,label = 'parametric curve')
         #plot = ax1.plot([0,100],[0,100],[0,100],label = 'parametric curve')
 
@@ -76,9 +81,9 @@ class s_saver():
         thread.daemon = True                                            #make sure that if we cancel main thread this thread cancels too
         thread.start()
 
-    def recThread_time(self,filename,noOfSamples,my,pos): #starts the thread that collects data in the background
+    def recThread_time(self,filename,noOfTime,my,pos): #starts the thread that collects data in the background
         #records in minutes 
-        thread = threading.Thread(target=self.record_time, args = (noOfSamples,filename,my,pos,)) #creates threading object with function record()
+        thread = threading.Thread(target=self.record_time, args = (noOfTime,filename,my,pos,)) #creates threading object with function record()
         thread.daemon = True                                            #make sure that if we cancel main thread this thread cancels too
         thread.start()  
 

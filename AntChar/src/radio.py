@@ -1,8 +1,6 @@
 from src import *
 class radio(gr_antenna):
 
-    freq = 30
-
     def __init__(self,qapp,ax1):
         #gr_antenna.__init__(self)
         super(radio,self).__init__()
@@ -10,7 +8,7 @@ class radio(gr_antenna):
         self.rec_event = threading.Event() # Threading event for recoding or not
         self.value = [0] # measurment value
         self.rec = s_saver(self.value_event,self.value,self.rec_event)
-        self.testblocks_event_sink_f_0 = testblocks.event_sink_f(self.value_event,self.value) # Sets event when new value is ready
+        self.antchar_event_sink_f_0 = antchar.event_sink_f(self.value_event, self.value) # Sets event when new value is ready
         
         def app():
             stdscr = curses.initscr()
@@ -68,15 +66,15 @@ class radio(gr_antenna):
                             pars.empty_que()
 
                         elif command_que[0] == 'val':
-                            info_string = "Current value: " + str(self.get_val())
+                            info_string = "Current value: " + str(self.value[0])
                             pars.set_status_false()
                             pars.empty_que()       
                         #set the center frequency
-                        elif command_que[0] == 'freq':
+                        elif command_que[0] == 'setcfreq':
 
                             if len(command_que) > 1:
                                 try: 
-                                    self.set_c_freq(double(double(command_que[1]))*double(1000000))
+                                    self.set_c_freq(double(double(command_que[1]))*double(1000000)-0.5e6)
                                 except ValueError:
                                     info_string = 'undefined value: ' + str(command_que[1])
                             else:
@@ -84,8 +82,29 @@ class radio(gr_antenna):
                             pars.set_status_false()
                             pars.empty_que()
                         #get the frequency
-                        elif command_que[0] == 'get':
+                        elif command_que[0] == 'getcfreq':
                             info_string = "Current center frequency: " + str(self.get_c_freq()) + " Hz"
+                            pars.set_status_false()
+                            pars.empty_que()
+
+                        #set the loop
+                        elif command_que[0] == 'setloop':
+
+                            if len(command_que) > 1:
+                                if command_que[1] == 'auto' and len(command_que) > 2:
+                                    try:
+                                        self.set_auto_loop(int(command_que[2]))
+                                    except ValueError:
+                                        info_string = 'undefined value: ' + str(command_que[2])
+                                else:
+                                    try:
+                                        tmp_loop = int(command_que[1])
+                                        self.set_auto_loop(0) 
+                                        self.set_loop(tmp_loop)
+                                    except ValueError:
+                                        info_string = 'undefined value: ' + str(command_que[1])
+                            else:
+                                info_string = "setloop command must have a value input" # Change to helpfunction
                             pars.set_status_false()
                             pars.empty_que()
 
@@ -94,40 +113,32 @@ class radio(gr_antenna):
                             pars.set_status_false()
                             pars.empty_que()
 
-                        elif command_que[0] == 'setvalfreq':
-
-                            if len(command_que) > 1:
-                                try: 
-                                    self.set_val_freq(int(command_que[1]))
-                                except ValueError:
-                                    info_string = 'undefined value: ' + str(command_que[1])
-                            else:
-                                info_string = "setvalfreq command must have a value input" # Change to helpfunction
-                            pars.set_status_false()
-                            pars.empty_que()
-
 	                    #record some values and then plot them with gnuplot
                         elif command_que[0] == 'recordsamples':
-
-                            if len(command_que) > 2:
-                                try: 
-                                    self.rec.recThread_samples(str(command_que[1]),int(command_que[2]),self,pos)
-                                except ValueError:
-                                    info_string = 'undefined value: ' + str(command_que[2])
+                            if self.rec_event.isSet() != True:
+                                if len(command_que) > 2:
+                                    try: 
+                                        self.rec.recThread_samples(str(command_que[1]),int(command_que[2]),self,pos)
+                                    except ValueError:
+                                        info_string = 'undefined value: ' + str(command_que[2])
+                                else:
+                                    info_string = "record command must have a value and name input" # Change to helpfunction
                             else:
-                                info_string = "record command must have a value and name input" # Change to helpfunction
+                                info_string = "Already recording" 
                             pars.set_status_false()
                             pars.empty_que()
 
                         elif command_que[0] == 'recordtime':
-
-                            if len(command_que) > 2:
-                                try: 
-                                    self.rec.recThread_time(str(command_que[1]),float(command_que[2]),self,pos)
-                                except ValueError:
-                                    info_string = 'undefined value: ' + str(command_que[2])
+                            if self.rec_event.isSet() != True:
+                                if len(command_que) > 2:
+                                    try: 
+                                        self.rec.recThread_time(str(command_que[1]),float(command_que[2]),self,pos)
+                                    except ValueError:
+                                        info_string = 'undefined value: ' + str(command_que[2])
+                                else:
+                                    info_string = "record command must have a value and name input" # Change to helpfunction
                             else:
-                                info_string = "record command must have a value and name input" # Change to helpfunction
+                                info_string = "Already recording" 
                             pars.set_status_false()
                             pars.empty_que()
 
@@ -163,6 +174,7 @@ class radio(gr_antenna):
 
 
                         else:
+                            info_string = 'undefined command: ' + str(command_que[0])
                             pars.set_status_false()
                             pars.empty_que()
                     
@@ -187,13 +199,10 @@ class radio(gr_antenna):
                 qapp.exit()
             print "Done.\nExiting."
 
-        self.connect((self.antchar_antenna_polarization_adder_ff_0, 0), (self.testblocks_event_sink_f_0, 0))
+        self.connect((self.antchar_antenna_polarization_adder_ff_0, 0), (self.antchar_event_sink_f_0, 0))
         app_thread =threading.Thread(target=app)
         app_thread.deamon = True
         app_thread.start()
 
     def get_val(self):
         return self.value[0]
-
-    def set_val_freq(self, _freq):
-        self.freq = _freq

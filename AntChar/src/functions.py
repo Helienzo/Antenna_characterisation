@@ -18,12 +18,12 @@ def update_screen(stdscr,_cl,_pos,_radio,_pars,_info_string,rec_event):
     win += "***  current position X :     "+ str(_pos.get_X())  +" **\n"
     win += "***  current position Y :     "+ str(_pos.get_Y())  +" **\n"
     win += "***  current position Z :     "+ str(_pos.get_Z())  +" **\n"
-    win += "***  Recording status :       "+ record_string + "  **\n"
-    win += "***  avilable commands: freq, val, setvalfreq, quit, origin ***\n"
-    win += "***  recordtime, recordsamples, plot ***\n"
-    win += "**********************************************\n"
+    win += "***  Recording status :       "+ record_string + "          **\n"
+    win += "***  avilable commands: setcfreq, getcfreq, val, quit, origin  ***\n"
+    win += "***  recordtime, recordsamples, plot                           ***\n"
+    win += "******************************************************************\n"
     win += "\n"
-    win += "----------------------------------------------------\n"
+    win += "------------------------------------------------------------------\n"
     stdscr.addstr(0,0,win)
     # -------------------------------------------------------------------------------
 
@@ -56,15 +56,17 @@ def help_string(help_command):
     if(help_command == ""):
         win =  "These are the available commands:                       \n"
         win += "                                                        \n"
-        win += "command:           explanation:                         \n"
+        win += "#command:           explanation:                        \n"
         win += "--------------------------------------------------------\n"
-        win += "recordsamples $filename.txt $number, records $number of \n"
+        win += "#recordsamples - $filename.txt $number, records $number of\n"
         win += "measurements with filename $filename.txt                \n"
-        win += "recordtime $filename.txt $time, records the specified   \n"
+        win += "#recordtime - $filename.txt $time, records the specified  \n"
         win += "time $time in minutes with filename $filename.txt       \n"
-        win += "                   into measurement.txt                 \n"
-        win += "value             returns the current SDR value (in dBm)\n"
-        win += "quit               exits the current session            \n"
+        win += " into measurement.txt                                   \n"
+        win += "#setcfreq - Changes the current center frequency        \n"
+        win += "#getcfreq - Get the current center frequency            \n"
+        win += "#val - returns the current SDR value (in dBmW/m2)       \n"
+        win += "#quit - Exits the current session                       \n"
     
     elif(help_command == "quit"):
         win = "quit: exits the current session and closes the           \n"
@@ -82,7 +84,7 @@ def help_string(help_command):
         win += "recordtime $filename.txt $time, records the specified   \n"
         win += "time $time in minutes with filename $filename.txt       \n"
 
-    elif(help_command == "value"):
+    elif(help_command == "val"):
         win =   "returns the signal strength that the SDR-dongle is     \n"
         win +=  "measuring in dBm                                       \n"
     else:
