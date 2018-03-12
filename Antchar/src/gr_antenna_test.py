@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Gr Antenna Test
-# Generated: Mon Mar 12 09:35:37 2018
+# Generated: Mon Mar 12 09:42:29 2018
 ##################################################
 
 if __name__ == '__main__':
@@ -82,7 +82,12 @@ class gr_antenna_test(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self.rational_resampler_base_xxx_0 = filter.rational_resampler_base_ccf(dec, dec*dec, (1, ))
+        self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
+                interpolation=1,
+                decimation=dec,
+                taps=(1, ),
+                fractional_bw=None,
+        )
         self.qtgui_vector_sink_f_0 = qtgui.vector_sink_f(
             fft_size/dec,
             0,
@@ -194,7 +199,7 @@ class gr_antenna_test(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_complex_to_mag_squared_0_0, 0), (self.blocks_nlog10_ff_0_0, 0))
         self.connect((self.blocks_max_xx_0, 0), (self.antchar_dbm_correction_py_ff_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_stream_to_vector_0_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.rational_resampler_base_xxx_0, 0))
+        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.blocks_nlog10_ff_0, 0), (self.blocks_max_xx_0, 0))
         self.connect((self.blocks_nlog10_ff_0_0, 0), (self.blocks_null_sink_1, 0))
         self.connect((self.blocks_nlog10_ff_0_0, 0), (self.qtgui_vector_sink_f_0, 0))
@@ -205,7 +210,7 @@ class gr_antenna_test(gr.top_block, Qt.QWidget):
         self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.blocks_stream_to_vector_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
-        self.connect((self.rational_resampler_base_xxx_0, 0), (self.blocks_stream_to_vector_0_0_0, 0))
+        self.connect((self.rational_resampler_xxx_0, 0), (self.blocks_stream_to_vector_0_0_0, 0))
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "gr_antenna_test")
