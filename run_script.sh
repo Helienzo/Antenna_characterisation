@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source /odroid/prefix/default/setup_env.sh
+source ~/prefix/default/setup_env.sh
 
-cd ~/AntennaCharacterization/AntChar
+cd ~/Antenna_characterisation/Antchar
 
 python main.py

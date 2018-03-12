@@ -1,0 +1,16 @@
+pip
+pybombs
+gnuplot
+python-gnuplot
+gnuradio
+libusb
+python-gps
+git
+cmake
+swig
+doxygen
+osmosdr
+rtl-sdr
+wiringPI (odroid)
+gpsd
+#source /home/odroid/prefix/default/setup_env.sh

@@ -1,7 +1,7 @@
 from subprocess import call
 import time
 
-call(["nmcli", "device", "disconnect", "wlp2s0"])
+call(["nmcli", "device", "disconnect", "wlan0"])
 time.sleep(1)
 call(["nmcli", "d" ,"wifi", "list"])
 ssid = raw_input("What wifi do you want to connect to? \n")
