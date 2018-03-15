@@ -177,6 +177,26 @@ class Application():
                             info_string = "Already recording" 
                         self.pars.set_status_false()
                         self.pars.empty_queue()
+                    
+                    elif command_queue[0] == "rec":
+                        if self.recEvent.isSet() == True:
+                            if len(command_queue) > 1:
+                                if command_queue[1] == "start":
+                                    self.rec.start()
+                                elif command_queue[1] == "stop":
+                                    self.rec.stop()
+                                elif command_queue[1] == "pause":
+                                    self.rec.pause()
+                                elif command_queue[1] == "step":
+                                    self.rec.step()
+                                else:
+                                    info_string = "undefined mode command: " + str(command_queue[1])
+                            else:
+                                info_string = "rec needs either start, stop or pause"
+                        else:
+                            info_string = "Not recording" 
+                        self.pars.set_status_false()
+                        self.pars.empty_queue()
 
                     elif command_queue[0] == "mode":
                         if len(command_queue) > 1:

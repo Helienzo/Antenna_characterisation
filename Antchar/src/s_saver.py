@@ -8,6 +8,10 @@ class s_saver():
         self.value_event = value_event  # threading event from gnuradio, is set when new value is aviable
         self.rec_event = rec_event # recording event
         self.data = data
+        self.start_event = threading.Event()
+        self.stop_event = threading.Event()
+        self.pause_event = threading.Event()
+        self.step_event = threading.Event()
 
     def record_samples(self,noOfSamples,filename,pos):     #collects and plots signal strength data from the SDR-dongle
         self.rec_event.set()
@@ -15,6 +19,7 @@ class s_saver():
         C_time = 0 # Current time
         S_time = time.time() # Start time
         val = 0
+        ind = 0
         name = filename.split('.')
         myFile = open(str(name[0]+".txt"), "w")
         myFilevec = open(str(name[0]+"_vector.txt"), "w")
@@ -22,7 +27,9 @@ class s_saver():
         
         #----------RECORDING LOOP--------------------#
         myFile.write("Nr Etime Raw dBm dBmW/m2 sum:dBmW/m2 loop X Y Z \n")
-        for x in range(0, noOfSamples):
+        while ind < noOfSamples and self.stop_event.isSet() != True:
+            self.start_event.clear()
+            ind += 1
             self.value_event.wait() # Wait untill new value is available
             rawVal = self.data.getData(0) #collect the measurement data
             corrVal = self.data.getData(1) #collect the measurement data
@@ -35,16 +42,27 @@ class s_saver():
             Z = pos.get_Z()
             lon = pos.get_long()
             lat = pos.get_lat()
-            myFile.write("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} \n".format(x+1, E_time,rawVal,corrVal,powVal,totVal,loopVal, X, Y, Z, lon, lat))    #write the data to file
+            myFile.write("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} \n".format(ind, E_time,rawVal,corrVal,powVal,totVal,loopVal, X, Y, Z, lon, lat))    #write the data to file
             for i in range(0,len(vec)):
                 myFilevec.write("{0} ".format(vec[i]))   #write the data to file
             myFilevec.write("\n")
             C_time = time.time() # Get current time
-            E_time = C_time - S_time # Calculate elapsed time
+            E_time = C_time - S_time # Calculate elapsed 
+
+            if self.pause_event.isSet():
+                self.pause_event.clear()
+                self.start_event.wait()
+                
+                P_time = time.time()-C_time
+                S_time += P_time
             self.value_event.clear() # Resets the flag.
+
         myFile.close()  #close and save the file
         myFilevec.close()  #close and save the file
         self.rec_event.clear()
+        self.stop_event.clear()
+        self.start_event.clear()
+        self.pause_event.clear()
         #-----------------------------------------__#
 
     def record_time(self,noOfTime,filename,pos):     #collects and plots signal strength data from the SDR-dongle
@@ -62,7 +80,8 @@ class s_saver():
         
         #----------RECORDING LOOP--------------------#
         myFile.write("Nr Etime Raw dBm dBmW/m2 sum:dBmW/m2 loop X Y Z \n")
-        while E_time < noOfTime:
+        while E_time < noOfTime and self.stop_event.isSet() != True:
+            self.start_event.clear()
             self.value_event.wait() # Wait untill new value is available
             x += 1 # Amount of samples
             rawVal = self.data.getData(0) #collect the measurement data
@@ -84,10 +103,20 @@ class s_saver():
             E_time = C_time - S_time # Calculate elapsed time
             #print E_time
             self.value_event.clear() # Resets the flag.
+            
+            if self.pause_event.isSet():
+                self.pause_event.clear()
+                self.start_event.wait()
+
+                P_time = time.time()-C_time
+                S_time += P_time
 
         myFile.close()                                  #close and save the file
         myFilevec.close()  #close and save the file
         self.rec_event.clear()
+        self.stop_event.clear()
+        self.start_event.clear()
+        self.pause_event.clear()
 
     def plotter(self,filename,ax1):
         x = []
@@ -114,3 +143,17 @@ class s_saver():
         thread.daemon = True                                            #make sure that if we cancel main thread this thread cancels too
         thread.start()  
 
+    def pause(self):
+        self.pause_event.set()
+
+    def start(self):
+        self.start_event.set()
+
+    def stop(self):
+        self.stop_event.set()
+        self.start_event.set()
+
+    def step(self):
+        #self.step_event.set()
+        self.start_event.set()
+        self.pause_event.set()
