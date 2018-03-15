@@ -161,6 +161,9 @@ class position(GpsPoller):
         pressDiff = (self.o_pressure/self.pressure)
         h = (287.05/9.80665)*np.log(pressDiff)*((2*273.15 + self.temp + self.o_temp)/2.0)
         return h
+    
+    def getTemperature(self):
+        return self.bar.readTemperature()
 
     def data(self):
         while gpsp.running:

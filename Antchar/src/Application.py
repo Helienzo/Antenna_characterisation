@@ -243,7 +243,7 @@ class Application():
                         self.pars.set_status_false()
                         self.pars.empty_queue()
                 
-                update_screen(self.stdscr,tid,self.pos,self.dsp,self.data,self.pars,info_string,self.recEvent)
+                update_screen(self.stdscr,tid,self.pos,self.dsp,self.data,self.pars,info_string,self.recEvent, self.bar)
                 info_string = ""
                 self.stdscr.refresh()
                 
