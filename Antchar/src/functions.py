@@ -1,6 +1,6 @@
 from src import *
 
-def update_screen(stdscr,_cl,_pos,_radio,_data,_pars,_info_string,rec_event):
+def update_screen(stdscr,_cl,_pos,_radio,_data,_pars,_info_string,rec_event, _baro):
     stdscr.clear()
     height, width = stdscr.getmaxyx()
     record_string = ""
@@ -12,6 +12,7 @@ def update_screen(stdscr,_cl,_pos,_radio,_data,_pars,_info_string,rec_event):
     # Application main info screen 12 rows ------------------------------------------
     win =  "**********************************************\n"
     win += "***  Antenna characteriastion aplication   ***\n"
+    win += "***  Temperature in box:     " + str(_pos.getTemperature())+ "
     win += "***  Running time:          "  +str(_cl)+"            ***\n"
     win += "***  current signal strengt: " + str(_data.getData(2)) + " *** \n"
     win += "***  current ceter freq:     " + str(_radio.get_c_freq()) + "      **\n"
