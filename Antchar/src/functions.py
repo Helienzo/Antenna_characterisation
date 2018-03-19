@@ -1,6 +1,6 @@
 from src import *
 
-def update_screen(stdscr,_cl,_pos,_radio,_data,_pars,_info_string,rec_event, _baro):
+def update_screen(stdscr,_cl,_pos,_radio,_data,_pars,_info_string,rec_event):
     stdscr.clear()
     height, width = stdscr.getmaxyx()
     record_string = ""
@@ -10,15 +10,14 @@ def update_screen(stdscr,_cl,_pos,_radio,_data,_pars,_info_string,rec_event, _ba
         record_string = "Not active"
     
     # Application main info screen 12 rows ------------------------------------------
-    win =  "**********************************************\n"
-    win += "***  Antenna characteriastion aplication   ***\n"
-    win += "***  Temperature in box:     " + str(_pos.getTemperature())+ "
-    win += "***  Running time:          "  +str(_cl)+"            ***\n"
-    win += "***  current signal strengt: " + str(_data.getData(2)) + " *** \n"
-    win += "***  current ceter freq:     " + str(_radio.get_c_freq()) + "      **\n"
-    win += "***  current position X :     "+ str(_pos.get_X())  +" **\n"
-    win += "***  current position Y :     "+ str(_pos.get_Y())  +" **\n"
-    win += "***  current position Z :     "+ str(_pos.get_Z())  +" **\n"
+    win  = "***  Antenna characteriastion aplication   ***\n"
+    win += "***  Temperature in box:     " + "{0:.3}".format(float(_pos.getTemperature())) + "            ***\n"
+    win += "***  Running time:           " + str(_cl)+ "            ***\n"
+    win += "***  current signal strengt: " + "{0:.3}".format(float(_data.getData(2))) + "        *** \n"
+    win += "***  current ceter freq:     " + "{0:.7}".format(float(_radio.get_c_freq())) + "      **\n"
+    win += "***  current position X :    " + "{0:.5}".format(float(_pos.get_X()))  + " **\n"
+    win += "***  current position Y :    " + "{0:.5}".format(float(_pos.get_Y()))  + " **\n"
+    win += "***  current position Z :    " + "{0:.5}".format(float(_pos.get_Z()))  + " **\n"
     win += "***  Recording status : "+ record_string + ", Currentloop: "+ str(_data.getData(3)) +" **\n"
     win += "***  avilable commands: setcfreq, getcfreq, val, quit, origin  ***\n"
     win += "***  recordtime, recordsamples, plot                           ***\n"
