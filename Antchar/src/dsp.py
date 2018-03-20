@@ -10,6 +10,7 @@ class dsp():
     def __init__(self,data,endEvent):
         self.endEvent = endEvent
         self.data = data
+        self.del_time = 0
         self.auto_run = True
         self.dataEvent = threading.Event()
         self.dspProcess = gnuradiodatacollector(data)
@@ -36,7 +37,7 @@ class dsp():
                 self.data.setData(self.antenna.getCurrentLoop(),3)
                 self.dataEvent.set()
                 self.loop()
-                #time.sleep(3)
+                time.sleep(self.del_time)
             else:
                 time.sleep(0.1)
         self.endProcess()
@@ -55,7 +56,10 @@ class dsp():
         self.dataEvent.set()
         self.loop()
         #time.sleep(3)
-    
+
+    def delay(self,del_time):
+        self.del_time = del_time
+
     def loop(self):
         if self.autoSwitch:
             self.antenna.loopSwitch()

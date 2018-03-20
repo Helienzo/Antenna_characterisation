@@ -25,7 +25,6 @@ class parser():
             tmplen = len(self.command_history)
             
             if self.key_count < tmplen:
-                print "lkjgnzklnkn"
                 self.key_count += 1
 
             if self.key_count <= tmplen and tmplen !=0:

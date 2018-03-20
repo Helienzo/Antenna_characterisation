@@ -3,7 +3,8 @@ import numpy as np
 class Data():
 
     def __init__(self):
-        self.vector = []
+        self.vector_raw = []
+        self.vector_log = []
         self.rawData = [0]
         self.dbmCorr = [0]
         self.power = [0,0,0]
@@ -30,14 +31,22 @@ class Data():
             self.currentLoop[0] = data
     
 
-    def setVector(self, inVec):
-        #self.vector = inVec        
-        self.vector = []
-        self.vector.extend(inVec)
+    def setVector(self, inVec,var):
+        #self.vector = inVec
+        if var == 0:        
+            self.vector_log = []
+            self.vector_log.extend(inVec)
+        elif var == 1:
+            self.vector_raw = []
+            self.vector_raw.extend(inVec)
 
-    def getVector(self):
-        return self.vector
-
+    def getVector(self,var):
+        if var == 0: 
+            return self.vector_log
+        elif var == 1: 
+            return self.vector_raw
+        else:
+            return 0
 
     #function for other classes to retrieve data
     def getData(self, var):
