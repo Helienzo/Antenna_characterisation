@@ -33,9 +33,14 @@ GR_PYTHON_INSTALL(
     __init__.py
     dbm_correction_py_ff.py
     AF_finder.py
+    Antenna.py
     E_field_calc_ff.py
-    Antenna_loop_ID.py
-    Antenna_loop_ID_ff.py DESTINATION ${GR_PYTHON_DIR}/antchar
+    Antenna_loop_ID_ff.py
+    Antenna_switch_c.py
+    antenna_polarization_adder_ff.py
+    event_sink_f.py
+    value_sink_ff.py
+    vector_sink_f.py DESTINATION ${GR_PYTHON_DIR}/antchar
 )
 
 install(FILES AF_data.txt DESTINATION ${GR_PYTHON_DIR}/antchar)
@@ -48,5 +53,9 @@ set(GR_TEST_TARGET_DEPS gnuradio-antchar)
 set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
 GR_ADD_TEST(qa_dbm_correction_py_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_dbm_correction_py_ff.py)
 GR_ADD_TEST(qa_E_field_calc_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_E_field_calc_ff.py)
-GR_ADD_TEST(qa_Antenna_loop_ID ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_Antenna_loop_ID.py)
 GR_ADD_TEST(qa_Antenna_loop_ID_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_Antenna_loop_ID_ff.py)
+GR_ADD_TEST(qa_Antenna_switch_c ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_Antenna_switch_c.py)
+GR_ADD_TEST(qa_antenna_polarization_adder_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_antenna_polarization_adder_ff.py)
+GR_ADD_TEST(qa_event_sink_f ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_event_sink_f.py)
+GR_ADD_TEST(qa_value_sink_ff ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_value_sink_ff.py)
+GR_ADD_TEST(qa_vector_sink_f ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_vector_sink_f.py)

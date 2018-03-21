@@ -33,6 +33,11 @@ except ImportError:
 # import any pure python here
 from dbm_correction_py_ff import dbm_correction_py_ff
 from E_field_calc_ff import E_field_calc_ff
-from Antenna_loop_ID import Antenna_loop_ID
 from Antenna_loop_ID_ff import Antenna_loop_ID_ff
+from Antenna_switch_c import Antenna_switch_c
+from antenna_polarization_adder_ff import antenna_polarization_adder_ff
+from event_sink_f import event_sink_f
+from Antenna import Antenna
+from value_sink_ff import value_sink_ff
+from vector_sink_f import vector_sink_f
 #

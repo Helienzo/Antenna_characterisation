@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<block>
+  <name>vector_sink_f</name>
+  <key>antchar_vector_sink_f</key>
+  <category>[antchar]</category>
+  <import>import antchar</import>
+  <make>antchar.vector_sink_f($data,$v_len,$var)</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  <param>
+    <name>Data_object</name>
+    <key>data</key>
+    <type>float</type>
+  </param>
+
+  <param>
+    <name>Vector_length</name>
+    <key>v_len</key>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Vector_type</name>
+    <key>var</key>
+    <type>int</type>
+  </param>
+
+  <!-- Make one 'sink' node per input. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <sink>
+    <name>in</name>
+    <type>float</type>
+    <vlen>$v_len</vlen>
+  </sink>
+
+  <!-- Make one 'source' node per output. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+</block>

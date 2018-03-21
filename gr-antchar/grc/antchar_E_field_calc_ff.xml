@@ -4,18 +4,13 @@
   <key>antchar_E_field_calc_ff</key>
   <category>[antchar]</category>
   <import>import antchar</import>
-  <make>antchar.E_field_calc_ff($res,$freq)</make>
+  <make>antchar.E_field_calc_ff($freq)</make>
   <callback>set_freq($freq)</callback>
   <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
        * name
        * key (makes the value accessible as $keyname, e.g. in the make node)
        * type -->
-  <param>
-    <name>Resistance</name>
-    <key>res</key>
-    <type>float</type>
-  </param>
 
   <param>
     <name>Frequecy</name>
@@ -42,4 +37,5 @@
     <name>out</name>
     <type>float</type>
   </source>
+
 </block>

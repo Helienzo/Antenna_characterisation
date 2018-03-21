@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<block>
+  <name>event_sink_f</name>
+  <key>antchar_event_sink_f</key>
+  <category>[antchar]</category>
+  <import>import antchar</import>
+  <make>antchar.event_sink_f($event, $val)</make>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+  <param>
+    <name>Value</name>
+    <key>val</key>
+    <type>float</type>
+  </param>
+
+  <param>
+    <name>Event</name>
+    <key>event</key>
+    <type>float</type>
+  </param>
+
+  <!-- Make one 'sink' node per input. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+
+  <!-- Make one 'source' node per output. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+
+</block>

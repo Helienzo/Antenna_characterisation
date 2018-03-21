@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<block>
+  <name>Antenna_switch_c</name>
+  <key>antchar_Antenna_switch_c</key>
+  <category>[antchar]</category>
+  <import>import antchar</import>
+  <make>antchar.Antenna_switch_c($dec, $v_len,$loop,$auto)</make>
+  <callback>set_auto($auto)</callback>
+  <callback>set_loop($loop)</callback>
+  <!-- Make one 'param' node for every Parameter you want settable from the GUI.
+       Sub-nodes:
+       * name
+       * key (makes the value accessible as $keyname, e.g. in the make node)
+       * type -->
+
+  <param>
+    <name>Automatic_loop_swith</name>
+    <key>auto</key>
+    <type>float</type>
+  </param>
+
+  <param>
+    <name>Current_loop</name>
+    <key>loop</key>
+    <type>float</type>
+  </param>
+
+  <param>
+    <name>FIR_decimation</name>
+    <key>dec</key>
+    <type>float</type>
+  </param>
+
+  <param>
+    <name>Vector_length</name>
+    <key>v_len</key>
+    <type>float</type>
+  </param>
+  <!-- Make one 'sink' node per input. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+
+  <!-- Make one 'source' node per output. Sub-nodes:
+       * name (an identifier for the GUI)
+       * type
+       * vlen
+       * optional (set to 1 for optional inputs) -->
+</block>
