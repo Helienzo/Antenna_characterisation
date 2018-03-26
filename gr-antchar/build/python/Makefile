@@ -56,17 +56,6 @@ CMAKE_BINARY_DIR = /home/odroid/prefix/default/src/gr-antchar/build
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -98,6 +87,17 @@ list_install_components:
 list_install_components/fast: list_install_components
 
 .PHONY : list_install_components/fast
+
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
 
 # Special rule for the target install/local
 install/local: preinstall
@@ -166,19 +166,19 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
-python/CMakeFiles/pygen_python_5c587.dir/rule:
-	cd /home/odroid/prefix/default/src/gr-antchar/build && $(MAKE) -f CMakeFiles/Makefile2 python/CMakeFiles/pygen_python_5c587.dir/rule
-.PHONY : python/CMakeFiles/pygen_python_5c587.dir/rule
+python/CMakeFiles/pygen_python_04580.dir/rule:
+	cd /home/odroid/prefix/default/src/gr-antchar/build && $(MAKE) -f CMakeFiles/Makefile2 python/CMakeFiles/pygen_python_04580.dir/rule
+.PHONY : python/CMakeFiles/pygen_python_04580.dir/rule
 
 # Convenience name for target.
-pygen_python_5c587: python/CMakeFiles/pygen_python_5c587.dir/rule
+pygen_python_04580: python/CMakeFiles/pygen_python_04580.dir/rule
 
-.PHONY : pygen_python_5c587
+.PHONY : pygen_python_04580
 
 # fast build rule for target.
-pygen_python_5c587/fast:
-	cd /home/odroid/prefix/default/src/gr-antchar/build && $(MAKE) -f python/CMakeFiles/pygen_python_5c587.dir/build.make python/CMakeFiles/pygen_python_5c587.dir/build
-.PHONY : pygen_python_5c587/fast
+pygen_python_04580/fast:
+	cd /home/odroid/prefix/default/src/gr-antchar/build && $(MAKE) -f python/CMakeFiles/pygen_python_04580.dir/build.make python/CMakeFiles/pygen_python_04580.dir/build
+.PHONY : pygen_python_04580/fast
 
 # Help Target
 help:
@@ -186,11 +186,11 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... install/strip"
 	@echo "... list_install_components"
-	@echo "... pygen_python_5c587"
+	@echo "... rebuild_cache"
+	@echo "... pygen_python_04580"
 	@echo "... install/local"
 	@echo "... install"
 	@echo "... test"

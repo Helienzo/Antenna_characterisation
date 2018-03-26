@@ -41,9 +41,10 @@ class dbm_correction_py_ff(gr.sync_block):
             self.freq = freq
 
     def work(self, input_items, output_items):
+        
         in0 = input_items[0]
         out = output_items[0]
-
+        #print("dBm: ",in0)
         if self.freq >=30 and self.freq < 75:
             res = self.p1[0]*self.freq**4 + self.p1[1]*self.freq**3 + self.p1[2]*self.freq**2 +self.p1[3]*self.freq + self.p1[4];
 

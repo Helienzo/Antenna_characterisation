@@ -4,19 +4,24 @@
   <key>antchar_Antenna_loop_ID_ff</key>
   <category>[antchar]</category>
   <import>import antchar</import>
-  <make>antchar.Antenna_loop_ID_ff()</make>
+  <make>antchar.Antenna_loop_ID_ff($dec,$v_len)</make>
   <!-- Make one 'param' node for every Parameter you want settable from the GUI.
        Sub-nodes:
        * name
        * key (makes the value accessible as $keyname, e.g. in the make node)
        * type -->
-<!--  <param>
-      <name>...</name>
-      <key>...</key>
-      <type>...</type>
-  </param>
--->
 
+  <param>
+    <name>FIR_decimation</name>
+    <key>dec</key>
+    <type>float</type>
+  </param>
+
+  <param>
+    <name>Vector_length</name>
+    <key>v_len</key>
+    <type>float</type>
+  </param>
   <!-- Make one 'sink' node per input. Sub-nodes:
        * name (an identifier for the GUI)
        * type
@@ -24,7 +29,7 @@
        * optional (set to 1 for optional inputs) -->
   <sink>
     <name>in</name>
-    <type>numpy.float32</type>
+    <type>complex</type>
   </sink>
 
   <!-- Make one 'source' node per output. Sub-nodes:
@@ -32,13 +37,9 @@
        * type
        * vlen
        * optional (set to 1 for optional inputs) -->
-  <source>
-    <name>out</name>
-    <type>numpy.float32</type>
-  </source>
   
     <source>
     <name>loop</name>
-    <type>numpy.int8</type>
+    <type>float</type>
   </source>
 </block>

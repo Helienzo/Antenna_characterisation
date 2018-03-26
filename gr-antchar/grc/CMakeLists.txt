@@ -20,6 +20,10 @@
 install(FILES
     antchar_dbm_correction_py_ff.xml
     antchar_E_field_calc_ff.xml
-    antchar_Antenna_loop_ID.xml
-    antchar_Antenna_loop_ID_ff.xml DESTINATION share/gnuradio/grc/blocks
+    antchar_Antenna_loop_ID_ff.xml
+    antchar_Antenna_switch_c.xml
+    antchar_antenna_polarization_adder_ff.xml
+    antchar_event_sink_f.xml
+    antchar_value_sink_ff.xml
+    antchar_vector_sink_f.xml DESTINATION share/gnuradio/grc/blocks
 )

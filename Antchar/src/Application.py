@@ -157,6 +157,21 @@ class Application():
                         self.pars.empty_queue()
 
                     #record some values and then plot them with gnuplot
+
+                    elif command_queue[0] == 'record':
+                        if self.recEvent.isSet() != True:
+                            if len(command_queue) > 1:
+                                try: 
+                                    self.rec.recThread(str(command_queue[1]),self.pos)
+                                except ValueError:
+                                    info_string = 'undefined value: ' + str(command_queue[1])
+                            else:
+                                info_string = "record command must have a name input" # Change to helpfunction
+                        else:
+                            info_string = "Already recording" 
+                        self.pars.set_status_false()
+                        self.pars.empty_queue()
+
                     elif command_queue[0] == 'recordsamples':
                         if self.recEvent.isSet() != True:
                             if len(command_queue) > 2:
@@ -196,6 +211,8 @@ class Application():
                                     self.rec.pause()
                                 elif command_queue[1] == "step":
                                     self.rec.step()
+                                elif command_queue[1] == "step3":
+                                    self.rec.step3()
                                 else:
                                     info_string = "undefined mode command: " + str(command_queue[1])
                             else:
@@ -213,6 +230,18 @@ class Application():
                                 self.dsp.update()
                             elif command_queue[1] == "unlock":
                                 self.dsp.unlock()
+                            elif command_queue[1] == "vecsave":
+                                self.rec.vecsave()
+                            elif command_queue[1] == "vecnosave":
+                                self.rec.vecnosave()
+                            elif command_queue[1] == "delay":
+                                if len(command_queue) > 2:
+                                    try:
+                                        self.dsp.delay(float(command_queue[2]))
+                                    except ValueError:
+                                        info_string = 'undefined value: ' + str(command_queue[2])
+                                else:
+                                    info_string = 'delay must have a value'
                             else:
                                 info_string = 'undefined mode command: ' + str(command_queue[1])
                         else:

@@ -28,8 +28,7 @@ class E_field_calc_ff(gr.sync_block):
     """
     Calculate E-field from voltage
     """
-    def __init__(self,res,freq):
-        self.res = res
+    def __init__(self,freq):
         self.freq = freq
         gr.sync_block.__init__(self,name="E_field_calc_ff",in_sig=[numpy.float32],out_sig=[numpy.float32])
 
@@ -37,19 +36,17 @@ class E_field_calc_ff(gr.sync_block):
             self.freq = freq
 
     def work(self, input_items, output_items):
+        
         in0 = input_items[0]
         out = output_items[0]
         afE,afH = af.finder(self.freq)
-        
+        #print("E: ",in0)
         micV = in0 + 107 #dBµV
         micVm = afE + micV #dBµV/m
         
-        micA = in0 + 73 #dBµA
-        micAm = afH + micA #dBµA/m
-        
-        E = 20*numpy.log10(numpy.sqrt(in0*float(self.res)/1000.0))+120+afE # dBuV/m
-        H = 20*numpy.log10(numpy.sqrt(in0*float(self.res)/1000.0))+120+afH # dBuA/m
-        P = E+H #dBuW/m²
-        out[:] = P
+        P = micVm-115.8 #+30#dBuW/m²
+
+        out[:] = P #dBmW/m2
+
         return len(output_items[0])
 

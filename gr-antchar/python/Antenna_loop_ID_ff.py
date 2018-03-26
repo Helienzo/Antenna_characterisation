@@ -21,29 +21,27 @@
 
 import numpy
 from gnuradio import gr
-#import Antenna as ant
+from Antenna import Antenna
 
 class Antenna_loop_ID_ff(gr.sync_block):
     """
     docstring for block Antenna_loop_ID
     """
-    def __init__(self):
-        ant = Antenna()
+    def __init__(self,dec,v_len):
+        self.dec = dec
+        self.v_len = v_len
+        self.ant = Antenna(self.dec,self.v_len)
         gr.sync_block.__init__(self,
             name="Antenna_loop_ID_ff",
-            in_sig=[numpy.float32],
-            out_sig=[numpy.float32, numpy.int8])
+            in_sig=[numpy.complex64],
+            out_sig=[numpy.float32])
 
 
     def work(self, input_items, output_items):
-        in0 = input_items[0]
-        out = output_items[0]
-        loop = output_items[1] #loop output
+        loop = output_items[0] #loop output
         # <+signal processing here+>
         
-        
-        out[:] = in0
-        loop[:] = ant.currentLoop() #Functionality of switching loop
+        loop[:] = self.ant.currentLoop() #Functionality of switching loop
                                     #is built into Antenna.py
                                     
         return len(output_items[:])

@@ -36,6 +36,12 @@ if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspeci
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gnuradio/grc/blocks" TYPE FILE FILES
     "/home/odroid/prefix/default/src/gr-antchar/grc/antchar_dbm_correction_py_ff.xml"
     "/home/odroid/prefix/default/src/gr-antchar/grc/antchar_E_field_calc_ff.xml"
+    "/home/odroid/prefix/default/src/gr-antchar/grc/antchar_Antenna_loop_ID_ff.xml"
+    "/home/odroid/prefix/default/src/gr-antchar/grc/antchar_Antenna_switch_c.xml"
+    "/home/odroid/prefix/default/src/gr-antchar/grc/antchar_antenna_polarization_adder_ff.xml"
+    "/home/odroid/prefix/default/src/gr-antchar/grc/antchar_event_sink_f.xml"
+    "/home/odroid/prefix/default/src/gr-antchar/grc/antchar_value_sink_ff.xml"
+    "/home/odroid/prefix/default/src/gr-antchar/grc/antchar_vector_sink_f.xml"
     )
 endif()
 
