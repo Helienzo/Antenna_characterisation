@@ -5,5 +5,4 @@ careful not to remove the space.
 centerFrequency = 220
 
 #Sets if recording vectors or not. Boolean.
-vectorRec = True 
-
+vectorRec = True

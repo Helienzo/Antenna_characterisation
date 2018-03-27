@@ -235,6 +235,46 @@ class position(GpsPoller):
         self.o_pressure = self.pressure # set origin pressure
         self.o_temp = self.temp  # Set origin temperature
 
+    def load_origin(self, R, s_o, c_o, x_o, y_o, z_o, t_mat, o_p, o_t)
+        self.R = R # Calculate earth radious at current latitude
+        self.s_origin = s_o # Origin of GPS set as current gps position
+        self.c_origin = c_o # origin in cartesian coord
+        # Load a basis
+        self.z_o = y_o # Normal vector to the plane
+        self.x_o = x_o
+        self.y_o = z_o
+        # load a transition matrix        
+        self.t_mat = t_mat # From local to earth
+        self.o_pressure = o_p # set origin pressure
+        self.o_temp = o_t  # Set origin temperature
+
+    def getR(self):
+        return self.R
+
+    def getSorigin(self):
+        return self.s_origin
+
+    def getCorigin(self):
+        return self.c_origin
+
+    def getZo(self):
+        return self.z_o
+
+    def getXo(self):
+        return self.x_o
+
+    def getYo(self):
+        return self.y_o
+
+    def getTmat(self):
+        return self.t_mat
+
+    def getOpressure(self):
+        return self.o_pressure
+
+    def getOtemp(self):
+        return self.o_temp
+
     def get_long(self):
         return self.phi
 

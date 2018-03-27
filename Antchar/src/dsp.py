@@ -48,6 +48,8 @@ class dsp():
     def unlock(self):
         self.auto_run = True
 
+    def getLockMode(self):
+        return self.auto_run
     def update(self):
         self.dspProcess.reset()
         self.dspProcess.start()
@@ -59,6 +61,9 @@ class dsp():
 
     def delay(self,del_time):
         self.del_time = del_time
+
+    def getDelay(self):
+        return self.del_time
 
     def loop(self):
         if self.autoSwitch:
@@ -82,8 +87,34 @@ class dsp():
         self.autoSwitch = False
         self.currentLoop = loop
 
+    def getLoop(self):
+        return self.currentLoop
+
+    def getLoopMode(self):
+        return self.autoSwitch
+
     def getDataEvent(self):
         return self.dataEvent
+
+    def getDecimation(self):
+        return self.dspProcess.get_FIR_decimation()
+
+    def setDecimation(self, FIR_decimation):
+        self.dspProcess.set_FIR_decimation(FIR_decimation)
+
+    def getCutoff(self):
+        return self.dspProcess.get_cutoff()
+
+    def setCutoff(self, cutoff):
+        self.dspProcess.set_cutoff(cutoff)
+
+    def getTransition(self):
+        return self.dspProcess.get_transition()
+
+    def setTransition(self, transition):
+        self.dspProcess.set_transition(transition)
+
+
 
 
 

@@ -200,6 +200,9 @@ class s_saver():
         self.pause_event.clear()
         self.step_event.clear()
 
+    def getVecMode(self):
+        return self.vecsave_event.isSet()
+
     def plotter(self,filename,ax1):
         x = []
         y = []

@@ -1,6 +1,7 @@
 #!/home/odroid/prefix/default/lib python2
 #source /home/odroid/prefix/default/setup_env.sh
 import math
+import ast
 import numpy as np
 from numpy import *
 import matplotlib.pyplot as plt
@@ -34,6 +35,7 @@ from Antenna import Antenna
 from Data import Data
 from dsp import dsp
 from GpsPoller import *
+from setup import setup
 from window import window
 #from functions import *
 from parser import parser
