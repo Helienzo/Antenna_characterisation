@@ -129,7 +129,7 @@ class Application():
 
             if len(command_queue) > 1:
                 try:
-                    self.setup.setCenterFreq(double(double(command_queue[1]))*double(1000000)-0.5e6)
+                    self.setup.setCenterFreq(double(command_queue[1])*1e6)
                 except ValueError:
                     self.info_string = 'undefined value: ' + str(command_queue[1])
             else:
@@ -235,19 +235,31 @@ class Application():
         elif command_queue[0] == "mode":
             if len(command_queue) > 1:
                 if command_queue[1] == "lock":
-                    self.dsp.lock()
+                    if len(command_queue)>2:
+                        try:
+                            self.setup.lock(command_queue[2])
+                        except ValueError:
+                            self.info_string("lock must be True or False " +
+                                             "(note capitalization)")
+                    else:
+                        self.info_string("lock must be True or False " +
+                                         "(note capitalization)")
                 elif command_queue[1] == "update":
                     self.dsp.update()
-                elif command_queue[1] == "unlock":
-                    self.dsp.unlock()
                 elif command_queue[1] == "vecsave":
-                    self.rec.vecsave()
-                elif command_queue[1] == "vecnosave":
-                    self.rec.vecnosave()
+                    if len(command_queue)>2
+                        try:
+                            self.setup.vectorSaveMode(bool(command_queue[2]))
+                        except ValueError:
+                            self.info_string("Argument must be True or False " +
+                                             "(note capitalization)")
+                    else:
+                        self.info_string("lock must be True or False " +
+                                         "(note capitalization)")
                 elif command_queue[1] == "delay":
                     if len(command_queue) > 2:
                         try:
-                            self.dsp.delay(float(command_queue[2]))
+                            self.setup.setDelay(float(command_queue[2]))
                         except ValueError:
                             self.info_string = 'undefined value: ' + str(command_queue[2])
                     else:
@@ -404,7 +416,6 @@ class Application():
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-    #finds the size of the setup.txt file.
     def setup_size(self):
         with open("setup.txt") as f:
             for i, l in enumerate(f):
