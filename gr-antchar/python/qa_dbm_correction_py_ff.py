@@ -32,10 +32,10 @@ class qa_dbm_correction_py_ff (gr_unittest.TestCase):
         self.tb = None
 
     def test_001_t (self):
-	    src_data = (1, 2)
+	    src_data = (0, 0)
 	    expected_result = (8.12070083618164, 9.12070083618164)
 	    src = blocks.vector_source_f(src_data)
-	    mult = dbm_correction_py_ff(36)
+	    mult = dbm_correction_py_ff(200)
 	    snk = blocks.vector_sink_f()
 	    self.tb.connect(src, mult)
 	    self.tb.connect(mult, snk)

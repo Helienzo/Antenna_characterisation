@@ -34,7 +34,8 @@ from Antenna import Antenna
 from Data import Data
 from dsp import dsp
 from GpsPoller import *
-from functions import *
+from window import window
+#from functions import *
 from parser import parser
 from Barometer import Barometer
 from s_saver import s_saver
