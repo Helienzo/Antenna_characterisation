@@ -5,6 +5,7 @@ class parser():
     total_string = ""
     command_history = []
     history = []
+    question = False
     do_status = False
     key_count = 0
 
@@ -23,7 +24,7 @@ class parser():
 
         elif k == 259: #key upp
             tmplen = len(self.command_history)
-            
+
             if self.key_count < tmplen:
                 self.key_count += 1
 
@@ -56,15 +57,15 @@ class parser():
 
     def clear_string(self):
         self.total_string = ""
-    
+
     def add_history(self,_str):
         self.history.extend(_str)
 
     def add_command_history(self,_str):
         self.command_history.extend(_str)
 
-    def get_command_history(self,_str):
-        self.command_history.extend(_str)
+    def get_command_history(self):
+        return self.command_history
 
     def get_do_status(self):
         #return the do status
@@ -83,3 +84,9 @@ class parser():
 
     def empty_queue(self):
         self.command_que[:] = []
+
+    def get_question(self):
+        return self.question
+
+    def set_question(self, status):
+        self.question = status

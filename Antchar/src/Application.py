@@ -44,7 +44,7 @@ class Application():
 
     def getInfoString(self):
         return self.info_string
-    
+
     def getTime(self):
         return self.tid
 
@@ -62,15 +62,11 @@ class Application():
         self.pos.stop()
         self.endEvent.set()
 
-
     def app(self):
-
         k = "" #init k the input character
 
         try:
-
             while (self.running):
-
                 time.sleep(0.1)
                 self.tid += 0.1
                 k = self.stdscr.getch()
@@ -80,7 +76,6 @@ class Application():
                 #    recentCommand()
 
                 if self.pars.get_do_status(): # If new command is available
-                    
                     if self.currentWindow == "standard":
                         self.standardApp()
                     elif self.currentWindow == "setup":
@@ -109,12 +104,11 @@ class Application():
                     self.info_string = 'undefined value: ' + str(command_queue[1])
             else:
                 self.tid = 0
+
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-        # Help command
         elif command_queue[0] == 'help':
-
             if len(command_queue) > 1:
                 try:
                     self.info_string = self.window.help_string(str(command_queue[1]))
@@ -122,6 +116,7 @@ class Application():
                     self.info_string = 'undefined help command: ' + str(command_queue[1])
             else:
                 self.info_string = self.window.help_string("")
+
             self.pars.set_status_false()
             self.pars.empty_queue()
 
@@ -130,70 +125,62 @@ class Application():
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-        #set the center frequency
         elif command_queue[0] == 'setcfreq':
 
             if len(command_queue) > 1:
                 try:
-                    self.dsp.set_c_freq(double(double(command_queue[1]))*double(1000000)-0.5e6)
+                    self.setup.setCenterFreq(double(command_queue[1])*1e6)
                 except ValueError:
                     self.info_string = 'undefined value: ' + str(command_queue[1])
             else:
                 self.info_string = "freq command must have a value input" # Change to helpfunction
+
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-        #get the frequency
         elif command_queue[0] == 'getcfreq':
             self.info_string = "Current center frequency: " + str(self.dsp.get_c_freq()) + " Hz"
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-        #set the loop
         elif command_queue[0] == 'setloop':
-
             if len(command_queue) > 1:
-
-                if command_queue[1] == 'auto' and len(command_queue) > 2:
-
+                if command_queue[1] == 'auto':
                     try:
-                        self.dsp.set_auto_loop(int(command_queue[2]))
+                        self.setup.setLoopAuto()
                     except ValueError:
                         self.info_string = 'undefined value: ' + str(command_queue[2])
-
-                else:
-
+                if command_queue[1] in [0,1,2,3] #checks that the user chooses an existing loop
                     try:
-                        tmp_loop = int(command_queue[1])
-                        self.dsp.set_loop(tmp_loop)
-                    except ValueError:
-                        self.info_string = 'undefined value: ' + str(command_queue[1])
-
+                        self.setup.setLoop(command_queue[2])
+                    else:
+                        self.info_string = 'undefined value for loop, must be 0,1,2 or 3'
+                else:
+                    self.info_string = 'must choose auto or specific loop'
             else:
-                self.info_string = "setloop command must have a value input" # Change to helpfunction
+                self.info_string = 'must choose auto or specific loop'
+
             self.pars.set_status_false()
             self.pars.empty_queue()
 
         elif command_queue[0] == 'origin':
-            self.pos.set_origin()
+            self.setup.setOrigin()
             self.pars.set_status_false()
             self.pars.empty_queue()
-
-        #record some values and then plot them with gnuplot
 
         elif command_queue[0] == 'record':
             if self.recEvent.isSet() != True:
                 if len(command_queue) > 1:
-                    try: 
+                    try:
                         self.rec.recThread(str(command_queue[1]),self.pos)
                     except ValueError:
                         self.info_string = 'undefined value: ' + str(command_queue[1])
                 else:
                     self.info_string = "record command must have a name input" # Change to helpfunction
             else:
-                self.info_string = "Already recording" 
+                self.info_string = "Already recording"
             self.pars.set_status_false()
-            self.pars.empty_queue()
+            self.pars.empty_queue() #record some values and then plot them with gnuplot
 
         elif command_queue[0] == 'recordsamples':
             if self.recEvent.isSet() != True:
@@ -248,19 +235,31 @@ class Application():
         elif command_queue[0] == "mode":
             if len(command_queue) > 1:
                 if command_queue[1] == "lock":
-                    self.dsp.lock()
+                    if len(command_queue)>2:
+                        try:
+                            self.setup.lock(command_queue[2])
+                        except ValueError:
+                            self.info_string("lock must be True or False " +
+                                             "(note capitalization)")
+                    else:
+                        self.info_string("lock must be True or False " +
+                                         "(note capitalization)")
                 elif command_queue[1] == "update":
                     self.dsp.update()
-                elif command_queue[1] == "unlock":
-                    self.dsp.unlock()
                 elif command_queue[1] == "vecsave":
-                    self.rec.vecsave()
-                elif command_queue[1] == "vecnosave":
-                    self.rec.vecnosave()
+                    if len(command_queue)>2
+                        try:
+                            self.setup.vectorSaveMode(bool(command_queue[2]))
+                        except ValueError:
+                            self.info_string("Argument must be True or False " +
+                                             "(note capitalization)")
+                    else:
+                        self.info_string("lock must be True or False " +
+                                         "(note capitalization)")
                 elif command_queue[1] == "delay":
                     if len(command_queue) > 2:
                         try:
-                            self.dsp.delay(float(command_queue[2]))
+                            self.setup.setDelay(float(command_queue[2]))
                         except ValueError:
                             self.info_string = 'undefined value: ' + str(command_queue[2])
                     else:
@@ -293,7 +292,7 @@ class Application():
             self.currentWindow = "setup"
             self.pars.set_status_false()
             self.pars.empty_queue()
-        #quit the program
+
         elif command_queue[0] == "quit":
             curses.nocbreak()
             self.stdscr.keypad(False)
@@ -306,12 +305,28 @@ class Application():
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-
     def setupApp(self):
          # Controll of main loop
         command_queue = self.pars.get_queue() # Get commands
+        question = self.pars.get_question()
 
-        if command_queue[0] == "set":
+        #handles if user has been asked y or n question for example when saving files
+        if question:
+            if command_queue[0] == 'y' or command_queue[0] == 'Y' or  command_queue[0] == 'yes':
+                string_list = self.pars.get_command_history()
+                setup.save(string_list[len(string_list)-1])
+
+            elif command_queue[0] == 'n' or command_queue[0] == 'N' or  command_queue[0] == 'no':
+                self.info_string = 'Did not overwrite.'
+
+            else:
+                self.info_string = 'Did not answer y or no. Question terminated'
+            self.pars.set_question(False)
+            self.pars.empty_queue()
+            self.pars.set_status_false()
+
+
+        elif command_queue[0] == "set":
             myfile = open(str("setup.txt"), "r")
             myfile_data = list(myfile.readlines())
             myfile.close()
@@ -322,9 +337,46 @@ class Application():
                     if command_queue[1] == "centerfrequency":
                         myfile_data[self.centerFrequencyLineNo] = "centerFrequency = " + insertData + "\n"
                         self.dsp.set_c_freq(double(double(command_queue[2]))*double(1000000)-0.5e6)
+
                     elif command_queue[1] == "vectorrec":
                         myfile_data.insert(self.vectorRecLineNo,
                                         "vectorRec = " + insertData)
+
+                    elif command_queue[1] == "delay": #set delay in the loop
+                        setup.setDelay(float(command_queue[2]))
+
+                    elif command_queue[1] == "loop": #set auto loop switching or set specific loop
+                        if len(command_queue) > 1:
+                            if command_queue[2] == 'auto':
+                                try:
+                                    self.setup.setLoopAuto()
+                                except ValueError:
+                                    self.info_string = 'undefined value: ' + str(command_queue[2])
+
+                            if command_queue[2] in [0,1,2,3] #checks that the user chooses an existing loop
+                                try:
+                                    self.setup.setLoop(command_queue[2])
+                                else:
+                                    self.info_string = 'undefined value for loop, must be 0,1,2 or 3'
+                            else:
+                                self.info_string = 'must choose auto or specific loop'
+                        else:
+                            self.info_string = 'must choose auto or specific loop'
+
+                    elif command_queue[1] == "lock": #set to lock the dsp chain or not
+                        setup.setLock(bool(command_queue[2]))
+
+                    elif command_queue[1] == "origin": #set gps origin manually
+                        setup.setOrigin(command_queue[2])
+
+                    elif command_queue[1] == "decimation": #set decimation in the lowpass filter in gnuradio
+                        setup.setDecimation(int(command_queue[2]))
+
+                    elif command_queue[1] == "cutoff": #set cutoff frequency (in Hz)
+                        setup.setCutoff(int(command_queue[2]))
+
+                    elif command_queue[1] == "transition": #set transition width in dsp chain.
+                        setup.setTransition(float(command_queue[2]))
 
                 except ValueError:
                     self.info_string = 'should be in the format: set $parameter $value '
@@ -334,17 +386,36 @@ class Application():
             self.pars.empty_queue()
             myfile = open(str("setup.txt"), "wb").writelines(myfile_data)
 
+        elif command_queue[0] == "save":
+            if len(command_queue) > 1:
+                if setup.fileCheck(command_queue[1]) #Check if a file already exists with same name
+                    self.info_string = 'File already exists. Do you want to overwrite it? [y/n]'
+                    self.pars.set_question(True)
+
+                else:
+                    setup.save(command_queue[1])
+
+            else:
+                self.info_string = 'Must write filename'
+            self.pars.set_status_false()
+            self.pars.empty_queue()
+
+        elif command_queue[0] == "load":
+            try:
+                setup.load(string(command_queue[1]))
+            except IOError:
+                self.info_string = 'That file does not exist. Try again.'
         #quit the program
         elif command_queue[0] == "close":
             self.currentWindow = "standard"
             self.pars.set_status_false()
             self.pars.empty_queue()
+
         else:
             self.info_string = 'undefined command: ' + str(command_queue[0])
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-    #finds the size of the setup.txt file.
     def setup_size(self):
         with open("setup.txt") as f:
             for i, l in enumerate(f):
