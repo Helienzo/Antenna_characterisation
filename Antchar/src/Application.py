@@ -44,7 +44,7 @@ class Application():
 
     def getInfoString(self):
         return self.info_string
-    
+
     def getTime(self):
         return self.tid
 
@@ -80,7 +80,7 @@ class Application():
                 #    recentCommand()
 
                 if self.pars.get_do_status(): # If new command is available
-                    
+
                     if self.currentWindow == "standard":
                         self.standardApp()
                     elif self.currentWindow == "setup":
@@ -184,14 +184,14 @@ class Application():
         elif command_queue[0] == 'record':
             if self.recEvent.isSet() != True:
                 if len(command_queue) > 1:
-                    try: 
+                    try:
                         self.rec.recThread(str(command_queue[1]),self.pos)
                     except ValueError:
                         self.info_string = 'undefined value: ' + str(command_queue[1])
                 else:
                     self.info_string = "record command must have a name input" # Change to helpfunction
             else:
-                self.info_string = "Already recording" 
+                self.info_string = "Already recording"
             self.pars.set_status_false()
             self.pars.empty_queue()
 
@@ -310,8 +310,25 @@ class Application():
     def setupApp(self):
          # Controll of main loop
         command_queue = self.pars.get_queue() # Get commands
+        question = self.pars.get_question()
 
-        if command_queue[0] == "set":
+        #handles if user has been asked y or n question for example when saving files
+        if question:
+            if command_queue[0] == 'y' or command_queue[0] == 'Y' or  command_queue[0] == 'yes':
+                string_list = self.pars.get_command_history()
+                setup.save(string_list[len(string_list)-1])
+
+            elif command_queue[0] == 'n' or command_queue[0] == 'N' or  command_queue[0] == 'no':
+                self.info_string = 'Did not overwrite.'
+
+            else:
+                self.info_string = 'Did not answer y or no. Question terminated'
+            self.pars.set_question(False)
+            self.pars.empty_queue()
+            self.pars.set_status_false()
+
+
+        elif command_queue[0] == "set":
             myfile = open(str("setup.txt"), "r")
             myfile_data = list(myfile.readlines())
             myfile.close()
@@ -322,9 +339,46 @@ class Application():
                     if command_queue[1] == "centerfrequency":
                         myfile_data[self.centerFrequencyLineNo] = "centerFrequency = " + insertData + "\n"
                         self.dsp.set_c_freq(double(double(command_queue[2]))*double(1000000)-0.5e6)
+
                     elif command_queue[1] == "vectorrec":
                         myfile_data.insert(self.vectorRecLineNo,
                                         "vectorRec = " + insertData)
+
+                    elif command_queue[1] == "delay": #set delay in the loop
+                        setup.setDelay(float(command_queue[2]))
+
+                    elif command_queue[1] == "loop": #set auto loop switching or set specific loop
+                        if len(command_queue) > 1:
+                            if command_queue[2] == 'auto':
+                                try:
+                                    self.setup.setLoopAuto()
+                                except ValueError:
+                                    self.info_string = 'undefined value: ' + str(command_queue[2])
+
+                            if command_queue[2] in [0,1,2,3] #checks that the user chooses an existing loop
+                                try:
+                                    self.setup.setLoop(command_queue[2])
+                                else:
+                                    self.info_string = 'undefined value for loop, must be 0,1,2 or 3'
+                            else:
+                                self.info_string = 'must choose auto or specific loop'
+                        else:
+                            self.info_string = 'must choose auto or specific loop'
+
+                    elif command_queue[1] == "lock": #set to lock the dsp chain or not
+                        setup.setLock(bool(command_queue[2]))
+
+                    elif command_queue[1] == "origin": #set gps origin manually
+                        setup.setOrigin(command_queue[2])
+
+                    elif command_queue[1] == "decimation": #set decimation in the lowpass filter in gnuradio
+                        setup.setDecimation(int(command_queue[2]))
+
+                    elif command_queue[1] == "cutoff": #set cutoff frequency (in Hz)
+                        setup.setCutoff(int(command_queue[2]))
+
+                    elif command_queue[1] == "transition": #set transition width in dsp chain.
+                        setup.setTransition(float(command_queue[2]))
 
                 except ValueError:
                     self.info_string = 'should be in the format: set $parameter $value '
@@ -334,11 +388,30 @@ class Application():
             self.pars.empty_queue()
             myfile = open(str("setup.txt"), "wb").writelines(myfile_data)
 
+        elif command_queue[0] == "save":
+            if len(command_queue) > 1:
+                if setup.fileCheck(command_queue[1]) #Check if a file already exists with same name
+                    self.info_string = 'File already exists. Do you want to overwrite it? [y/n]'
+                    self.pars.set_question(True)
+
+                else:
+                    setup.save(command_queue[1])
+
+            else:
+                self.info_string = 'Must write filename'
+            self.pars.set_status_false()
+            self.pars.empty_queue()
+
+
+        elif command_queue[0] == "load":
+            setup.load(string(command_queue[1]))
+
         #quit the program
         elif command_queue[0] == "close":
             self.currentWindow = "standard"
             self.pars.set_status_false()
             self.pars.empty_queue()
+
         else:
             self.info_string = 'undefined command: ' + str(command_queue[0])
             self.pars.set_status_false()
