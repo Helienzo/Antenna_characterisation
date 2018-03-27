@@ -62,15 +62,11 @@ class Application():
         self.pos.stop()
         self.endEvent.set()
 
-
     def app(self):
-
         k = "" #init k the input character
 
         try:
-
             while (self.running):
-
                 time.sleep(0.1)
                 self.tid += 0.1
                 k = self.stdscr.getch()
@@ -80,7 +76,6 @@ class Application():
                 #    recentCommand()
 
                 if self.pars.get_do_status(): # If new command is available
-
                     if self.currentWindow == "standard":
                         self.standardApp()
                     elif self.currentWindow == "setup":
@@ -109,12 +104,11 @@ class Application():
                     self.info_string = 'undefined value: ' + str(command_queue[1])
             else:
                 self.tid = 0
+
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-        # Help command
         elif command_queue[0] == 'help':
-
             if len(command_queue) > 1:
                 try:
                     self.info_string = self.window.help_string(str(command_queue[1]))
@@ -122,6 +116,7 @@ class Application():
                     self.info_string = 'undefined help command: ' + str(command_queue[1])
             else:
                 self.info_string = self.window.help_string("")
+
             self.pars.set_status_false()
             self.pars.empty_queue()
 
@@ -130,56 +125,48 @@ class Application():
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-        #set the center frequency
         elif command_queue[0] == 'setcfreq':
 
             if len(command_queue) > 1:
                 try:
-                    self.dsp.set_c_freq(double(double(command_queue[1]))*double(1000000)-0.5e6)
+                    self.setup.setCenterFreq(double(double(command_queue[1]))*double(1000000)-0.5e6)
                 except ValueError:
                     self.info_string = 'undefined value: ' + str(command_queue[1])
             else:
                 self.info_string = "freq command must have a value input" # Change to helpfunction
+
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-        #get the frequency
         elif command_queue[0] == 'getcfreq':
             self.info_string = "Current center frequency: " + str(self.dsp.get_c_freq()) + " Hz"
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-        #set the loop
         elif command_queue[0] == 'setloop':
-
             if len(command_queue) > 1:
-
-                if command_queue[1] == 'auto' and len(command_queue) > 2:
-
+                if command_queue[1] == 'auto':
                     try:
-                        self.dsp.set_auto_loop(int(command_queue[2]))
+                        self.setup.setLoopAuto()
                     except ValueError:
                         self.info_string = 'undefined value: ' + str(command_queue[2])
-
-                else:
-
+                if command_queue[1] in [0,1,2,3] #checks that the user chooses an existing loop
                     try:
-                        tmp_loop = int(command_queue[1])
-                        self.dsp.set_loop(tmp_loop)
-                    except ValueError:
-                        self.info_string = 'undefined value: ' + str(command_queue[1])
-
+                        self.setup.setLoop(command_queue[2])
+                    else:
+                        self.info_string = 'undefined value for loop, must be 0,1,2 or 3'
+                else:
+                    self.info_string = 'must choose auto or specific loop'
             else:
-                self.info_string = "setloop command must have a value input" # Change to helpfunction
+                self.info_string = 'must choose auto or specific loop'
+
             self.pars.set_status_false()
             self.pars.empty_queue()
 
         elif command_queue[0] == 'origin':
-            self.pos.set_origin()
+            self.setup.setOrigin()
             self.pars.set_status_false()
             self.pars.empty_queue()
-
-        #record some values and then plot them with gnuplot
 
         elif command_queue[0] == 'record':
             if self.recEvent.isSet() != True:
@@ -193,7 +180,7 @@ class Application():
             else:
                 self.info_string = "Already recording"
             self.pars.set_status_false()
-            self.pars.empty_queue()
+            self.pars.empty_queue() #record some values and then plot them with gnuplot
 
         elif command_queue[0] == 'recordsamples':
             if self.recEvent.isSet() != True:
@@ -293,7 +280,7 @@ class Application():
             self.currentWindow = "setup"
             self.pars.set_status_false()
             self.pars.empty_queue()
-        #quit the program
+
         elif command_queue[0] == "quit":
             curses.nocbreak()
             self.stdscr.keypad(False)
@@ -305,7 +292,6 @@ class Application():
             self.info_string = 'undefined command: ' + str(command_queue[0])
             self.pars.set_status_false()
             self.pars.empty_queue()
-
 
     def setupApp(self):
          # Controll of main loop
@@ -402,10 +388,11 @@ class Application():
             self.pars.set_status_false()
             self.pars.empty_queue()
 
-
         elif command_queue[0] == "load":
-            setup.load(string(command_queue[1]))
-
+            try:
+                setup.load(string(command_queue[1]))
+            except IOError:
+                self.info_string = 'That file does not exist. Try again.'
         #quit the program
         elif command_queue[0] == "close":
             self.currentWindow = "standard"
