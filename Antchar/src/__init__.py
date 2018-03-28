@@ -35,7 +35,7 @@ from Antenna import Antenna
 from Data import Data
 from dsp import dsp
 from GpsPoller import *
-from setup import setup
+from config import config
 from window import window
 #from functions import *
 from parser import parser

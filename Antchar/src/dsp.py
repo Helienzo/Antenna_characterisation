@@ -49,7 +49,7 @@ class dsp():
         self.auto_run = True
 
     def getLockMode(self):
-        return self.auto_run
+        return not self.auto_run
     def update(self):
         self.dspProcess.reset()
         self.dspProcess.start()
@@ -88,7 +88,7 @@ class dsp():
         self.currentLoop = loop
 
     def getLoop(self):
-        return self.currentLoop
+        return self.antenna.getCurrentLoop()
 
     def getLoopMode(self):
         return self.autoSwitch

@@ -1,10 +1,11 @@
 from src import *
 
 class window():
-    def __init__(self,stdscr,pos,dsp,data,pars,recEvent,app):
+    def __init__(self,stdscr,pos,dsp,data,pars,recEvent,rec,app):
         self._stdscr = stdscr
         self._pos = pos
         self._dsp = dsp
+        self._rec = rec
         self._data = data
         self._pars = pars
         self._app = app
@@ -122,17 +123,25 @@ class window():
 
         # Application main info screen 12 rows ------------------------------------------
         win  = "***  Setup file   ***\n"
-        win += "***  Center frequency:     " + "{0:.3}".format(float(self._dsp.get_c_freq())) + "            ***\n"
-        win += "***  Record vector :    " + "{0:.3}".format("True")  + " **\n"
+        win += "***  Center frequency: " + str(float(self._dsp.get_c_freq())/float(1e6)) + "            ***\n"
+        win += "***  loopMode        : " + str(self._dsp.getLoopMode())    + " \n"
+        win += "***  loopNr          : " + str(self._dsp.getLoop())        + " \n"
+        win += "***  Lock            : " + str(self._dsp.getLockMode())    + " \n"
+        win += "***  system delay    : " + str(self._dsp.getDelay())       + " \n"
+        win += "***  VecMode         : " + str(self._rec.getVecMode())     + " \n"
+        win += "***  Gps origin      : " + str(self._pos.getSorigin())     + " \n"
+        win += "***  Air pressure    : " + str(self._pos.getOpressure())   + " \n"
+        win += "***  Air temperature : " + str(self._pos.getOtemp())       + " \n"
+        win += "***  FIR decimation  : " + str(self._dsp.getDecimation())  + " \n"
+        win += "***  FIR Cutoff      : " + str(self._dsp.getCutoff())      + " \n"
+        win += "***  FIR transition  : " + str(self._dsp.getTransition())  + " \n"
         win += "***  To change a value write: set $parameter $value   ***\n"
-        win += "******************************************************************\n"
-        win += "\n"
         win += "------------------------------------------------------------------\n"
         self._stdscr.addstr(0,0,win)
         # -------------------------------------------------------------------------------
 
         # Command history and info screen
-        avil_rows = height - 7 - 1 # 14 rows occupied by information at top of string
+        avil_rows = height - 17 - 1 # 14 rows occupied by information at top of string
 
         command_history = self._pars.get_history()
         list_length = len(command_history)
