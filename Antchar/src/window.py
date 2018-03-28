@@ -111,6 +111,42 @@ class window():
         elif(help_command == "val"):
             win =   "returns the signal strength that the SDR-dongle is     \n"
             win +=  "measuring in dBm                                       \n"
+
+        elif(help_command == "setcfreq"):
+            win =   "Changes the center frequency for the SDR-dongle         \n"
+
+        elif(help_command == "getcfreq"):
+            win =   "returns the current center frequency for the SDR-dongle \n"
+
+        elif(help_command == "setloop"):
+            win =   "Can either be auto (setloop auto) or a specific         \n"
+            win +=  "loop (e.g. setloop 1 for loop 1. There is no way to     \n"
+            win +=  "turn off auto at the moment other than just choosing a  \n"
+            win +=  "specific loop.                                          \n"
+
+        elif(help_command == "origin"):
+            win =   "sets the current GPS-coordinates as origin in the local \n"
+            win +=  "coordinate system                                       \n"
+
+        elif(help_command == "val"):
+            win =   "returns the signal strength that the SDR-dongle is     \n"
+            win +=  "measuring in dBm                                       \n"
+
+        elif(help_command == "val"):
+            win =   "returns the signal strength that the SDR-dongle is     \n"
+            win +=  "measuring in dBm                                       \n"
+
+        elif(help_command == "val"):
+            win =   "returns the signal strength that the SDR-dongle is     \n"
+            win +=  "measuring in dBm                                       \n"
+
+        elif(help_command == "val"):
+            win =   "returns the signal strength that the SDR-dongle is     \n"
+            win +=  "measuring in dBm                                       \n"
+
+        elif(help_command == "val"):
+            win =   "returns the signal strength that the SDR-dongle is     \n"
+            win +=  "measuring in dBm                                       \n"
         else:
             raise SyntaxError
         return win
@@ -156,4 +192,3 @@ class window():
                     i = i - str_length+1
                 self._stdscr.addstr(height-2-str_length-i, 0,str(tmp_str))
         self._stdscr.addstr(height-1, 0,"# Write command$ "+self._pars.get_full_string()) # Command input
-
