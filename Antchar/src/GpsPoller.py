@@ -231,22 +231,38 @@ class position(GpsPoller):
         self.y_o = self.vector_normalize(self.cross_prod(self.z_o,self.x_o))
         # Make a transition matrix        
         self.t_mat = self.gen_base_trans_mat(self.x_o, self.y_o, self.z_o) # From local to earth
-        self.t_mat = np.linalg.inv(self.t_mat) #from earth to local
+        self.t_mat = np.ndarray.tolist(np.linalg.inv(self.t_mat)) #from earth to local
         self.o_pressure = self.pressure # set origin pressure
         self.o_temp = self.temp  # Set origin temperature
 
-    def load_origin(self, R, s_o, c_o, x_o, y_o, z_o, t_mat, o_p, o_t)
-        self.R = R # Calculate earth radious at current latitude
-        self.s_origin = s_o # Origin of GPS set as current gps position
-        self.c_origin = c_o # origin in cartesian coord
+    def setR(self,val):
+        self.R = val # Calculate earth radious at current latitude
+
+    def setSorigin(self,val):
+        self.s_origin = val # Origin of GPS set as current gps position
+
+    def setCorigin(self,val):
+        self.c_origin = val # origin in cartesian coord
         # Load a basis
-        self.z_o = y_o # Normal vector to the plane
-        self.x_o = x_o
-        self.y_o = z_o
-        # load a transition matrix        
-        self.t_mat = t_mat # From local to earth
-        self.o_pressure = o_p # set origin pressure
-        self.o_temp = o_t  # Set origin temperature
+
+    def setXo(self,val):
+        self.x_o = val # Normal vector to the plane
+
+    def setYo(self,val):
+        self.y_o = val
+
+    def setZo(self,val):
+        self.z_o = val
+        # load a transition matrix   
+
+    def setTmat(self,val):     
+        self.t_mat = val # From local to earth
+
+    def setOpressure(self,val):
+        self.o_pressure = val # set origin pressure
+
+    def setOtemp(self,val):
+        self.o_temp = val  # Set origin temperature
 
     def getR(self):
         return self.R

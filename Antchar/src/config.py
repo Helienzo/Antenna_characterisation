@@ -1,15 +1,13 @@
 from src import *
 
-class setup():
+class config():
     def __init__(self,pos,dsp,rec):
         self._pos = pos
         self._dsp = dsp
         self._rec = rec
 
-        self._origin = []
 
-
-    def filecheck(self,filename):
+    def fileCheck(self,filename):
         return os.path.exists(str(filename))
 
     def save(self,filename):
@@ -23,7 +21,7 @@ class setup():
         myfile.write("loopNr = " + str(self._dsp.getLoop())+"\n")
         myfile.write("loopMode = " + str(self._dsp.getLoopMode())+"\n")
         myfile.write("vecmode = " + str(self._rec.getVecMode())+"\n")
-        myfile.write("R = "+ str(self._pos.getR()))
+        myfile.write("R = "+ str(self._pos.getR())+"\n")
         myfile.write("sOrigin = " + str(self._pos.getSorigin())+"\n")
         myfile.write("cOrigin = " + str(self._pos.getCorigin())+"\n")
         myfile.write("xO = " + str(self._pos.getXo())+"\n")
@@ -42,7 +40,7 @@ class setup():
             myfile = open(str(filename), "r")
             lineNo = 0
             for line in myfile:
-                fileVec = line.split("= ")
+                fileVec = line.split(" = ")
                 lineNo += 1
                 if fileVec[0] == "centerFrequency":
                     fileVec = fileVec[1].split("\n")
@@ -78,47 +76,47 @@ class setup():
                 elif fileVec[0] == "R":
                     fileVec = fileVec[1].split("\n")
                     val = ast.literal_eval(fileVec[0])
-                    self._origin.append(val)
+                    self.setR(val)
 
                 elif fileVec[0] == "sOrigin":
                     fileVec = fileVec[1].split("\n")
                     val = ast.literal_eval(fileVec[0])
-                    self._origin.append(val)
+                    self.setSorigin(val)
 
                 elif fileVec[0] == "cOrigin":
                     fileVec = fileVec[1].split("\n")
                     val = ast.literal_eval(fileVec[0])
-                    self._origin.append(val)
+                    self.setCorigin(val)
 
                 elif fileVec[0] == "xO":
                     fileVec = fileVec[1].split("\n")
                     val = ast.literal_eval(fileVec[0])
-                    self._origin.append(val)
+                    self.setX(val)
 
                 elif fileVec[0] == "yO":
                     fileVec = fileVec[1].split("\n")
                     val = ast.literal_eval(fileVec[0])
-                    self._origin.append(val)
+                    self.setY(val)
 
                 elif fileVec[0] == "zO":
                     fileVec = fileVec[1].split("\n")
                     val = ast.literal_eval(fileVec[0])
-                    self._origin.append(val)
+                    self.setZ(val)
 
                 elif fileVec[0] == "tMat":
                     fileVec = fileVec[1].split("\n")
                     val = ast.literal_eval(fileVec[0])
-                    self._origin.append(val)
+                    self.setTmat(val)
 
                 elif fileVec[0] == "oPressure":
                     fileVec = fileVec[1].split("\n")
                     val = ast.literal_eval(fileVec[0])
-                    self._origin.append(val)
+                    self.setOpressure(val)
 
                 elif fileVec[0] == "oTemp":
                     fileVec = fileVec[1].split("\n")
                     val = ast.literal_eval(fileVec[0])
-                    self._origin.append(val)
+                    self.setOtemp(val)
 
                 elif fileVec[0] == "decimation":
                     fileVec = fileVec[1].split("\n")
@@ -135,7 +133,7 @@ class setup():
                     val = ast.literal_eval(fileVec[0])
                     self.setTransition(val)
 
-            self.loadOrigin()
+            #self.loadOrigin()
 
     def setLock(self,mode):
         if mode:
@@ -149,7 +147,7 @@ class setup():
     def setLoop(self,loop):
         self._dsp.set_loop(loop)
 
-    def setLoopAuto(self)
+    def setLoopAuto(self):
         self._dsp.set_auto_loop(1)
 
     def vectorSaveMode(self,mode):
@@ -158,16 +156,38 @@ class setup():
         else:
             self._rec.vecnosave()
 
-    def loadOrigin(self):
-        if len(self._origin) == 9:
-            self._pos.load_origin(origin[0],origin[1],origin[2],origin[3],origin[4],origin[5],origin[6],origin[7],origin[8],)
-        self._origin = []
+    def setR(self,val):
+        self._pos.setR(val)
+
+    def setSorigin(self,val):
+        self._pos.setSorigin(val)
+
+    def setCorigin(self,val):
+        self._pos.setCorigin(val)
+
+    def setX(self,val):
+        self._pos.setXo(val)
+
+    def setY(self,val):
+        self._pos.setYo(val)
+
+    def setZ(self,val):
+        self._pos.setZo(val)
+
+    def setTmat(self,val):
+        self._pos.setTmat(val)
+
+    def setOpressure(self,val):
+        self._pos.setOpressure(val)
+
+    def setOtemp(self,val):
+        self._pos.setOtemp(val)
 
     def setOrigin(self):
         self._pos.set_origin()
 
     def setCenterFreq(self,centerfreq):
-        self._dsp.set_c_freq(double(double(centerfreq))*double(1000000)-0.5e6)
+        self._dsp.set_c_freq(double(centerfreq)*1e6-0.5e6)
 
     def setDecimation(self,decimation):
         self._dsp.setDecimation(decimation)
