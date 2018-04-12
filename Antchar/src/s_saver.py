@@ -50,11 +50,13 @@ class s_saver():
             if self.vecsave_event.isSet():
                 vec = self.data.getVector(0)
                 vecRAW = self.data.getVector(1)
-                for i in range(0,len(vec)):
-                    myFilevec.write("{0} ".format(vec[i]))   #write the data to file
+                for i in range(0,len(vec)-1):
+                    myFilevec.write("{0} {1}".format(vec[i],","))   #write the data to file
+                myFilevec.write("{0}".format(vec[len(vec)-1]))
                 myFilevec.write("\n")
-                for i in range(0,len(vecRAW)):
-                    myFilevecRAW.write("{0} ".format(vecRAW[i]))   #write the data to file
+                for i in range(0,len(vecRAW)-1):
+                    myFilevecRAW.write("{0} {1}".format(vecRAW[i],","))   #write the data to file
+                myFilevecRAW.write("{0}".format(vecRAW[len(vecRAW)-1]))
                 myFilevecRAW.write("\n")
 
             if self.pause_event.isSet():
@@ -207,15 +209,27 @@ class s_saver():
         x = []
         y = []
         z = []
-        vec = self.data.getVector()
+        val = []
+        i = 0
+        vec = self.data.getVector(0)
         myfile = open(str(filename), "r")
         for line in myfile:
+            i += 1
             coord = line.split(" ")
-            #x.append(float(coord[7]))
-            #y.append(float(coord[8]))
-            #z.append(float(coord[9]))
-        plot = ax1.plot(vec)
+            if i>2:
+                val.append(float(coord[2]))
+                #y.append(float(coord[8]))
+                #z.append(float(coord[9]))
+        plot = ax1.plot(val)
         #plot = ax1.plot([0,100],[0,100],[0,100],label = 'parametric curve')
+
+    def plottvec(self,filename,vecline,ax1):
+        val = []
+        myfile = open(str(filename),"r")
+        val = myfile.readlines()
+        fileVec = val[int(vecline)].split("\n")
+        val = ast.literal_eval(fileVec[0])
+        plot = ax1.plot(val)
  
     def recThread(self,filename,pos): #starts the thread that collects data in the background 
         thread = threading.Thread(target=self.record, args = (filename,pos,)) #creates threading object with function record()

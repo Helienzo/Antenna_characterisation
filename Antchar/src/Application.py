@@ -275,6 +275,12 @@ class Application():
                     self.ax1.cla()
                 elif command_queue[1] == "close":
                     plt.close(self.fig)
+                elif command_queue[1] == "vec":
+                    try:
+                        self.rec.plottvec(str(command_queue[2]),str(command_queue[3]),self.ax1)
+                        self.plotEvent.set()
+                    except IOError:
+                        self.info_string = 'undefined filename: ' + str(command_queue[1])
                 else:
                     try:
                         self.rec.plotter(str(command_queue[1]),self.ax1)

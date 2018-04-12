@@ -10,6 +10,7 @@ class Data():
         self.power = [0,0,0]
         self.totPower = [0]
         self.currentLoop = [0]
+        self.NF = 0
     
     #function for other classes to store data in this class
     def setData(self,data,var):
@@ -30,6 +31,10 @@ class Data():
         elif var == 3:
             self.currentLoop[0] = data
     
+    def esimateNF(self):
+        vec_len = len(self.vector_log)
+        
+        return self.NF
 
     def setVector(self, inVec,var):
         #self.vector = inVec

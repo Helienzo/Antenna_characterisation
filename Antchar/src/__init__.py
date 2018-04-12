@@ -30,6 +30,7 @@ from gps import *
 from Adafruit_BME280 import *
 import curses
 
+from dronekit import connect, VehicleMode
 from gr_antenna import gr_antenna
 from Antenna import Antenna
 from Data import Data

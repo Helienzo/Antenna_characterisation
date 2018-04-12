@@ -1,8 +1,10 @@
 from subprocess import call
 import time
 
-antchar_path = "~/AntennaCharacterization/AntChar/gr-antchar/build"
-call(["cd", antchar_path])
+#antchar_path = "~/AntennaCharacterization/gr-antchar/"
+call(["cd", "gr-antchar"])
+call(["mkdir", "build"])
+call(["cd", "build"])
 call(["cmake", "../"])
 call(["make"])
 call(["sudo", "make", "install"])  
