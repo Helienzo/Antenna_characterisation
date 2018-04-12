@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Gr Antenna
-# Generated: Mon Mar 12 13:16:35 2018
+# Generated: Thu Apr 12 09:20:16 2018
 ##################################################
 
 from gnuradio import blocks
@@ -57,7 +57,7 @@ class gr_antenna(gr.top_block):
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(0, 0)
 
-        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccf(FIR_decimation, (lowpasstaps), 0.5e6, samp_rate)
+        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccf(FIR_decimation, (lowpasstaps), 500e3, samp_rate)
         self.fft_vxx_0 = fft.fft_vcc(fft_size, True, (window.blackmanharris(fft_size)), True, 1)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_stream_to_vector_0_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fft_size)

@@ -601,7 +601,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(391, 147)</value>
+      <value>(391, 91)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1060,7 +1060,7 @@
     </param>
     <param>
       <key>center_freq</key>
-      <value>0.5e6</value>
+      <value>500e3</value>
     </param>
     <param>
       <key>comment</key>
@@ -1080,7 +1080,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(631, 167)</value>
+      <value>(599, 135)</value>
     </param>
     <param>
       <key>_rotation</key>

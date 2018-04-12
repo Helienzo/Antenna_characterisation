@@ -51,6 +51,9 @@ class parser():
         elif (k>47 and k<58): #Numbers
             self.total_string = self.total_string + chr(k)
 
+        elif (k == 95): #Underline
+            self.total_string = self.total_string + chr(k)
+
     def get_full_string(self):
         #Return the total string
         return self.total_string
