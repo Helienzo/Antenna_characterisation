@@ -79,19 +79,36 @@ class window():
 
     def help_string(self,help_command):
         if(help_command == ""):
-            win =  "These are the available commands:                       \n"
-            win += "                                                        \n"
-            win += "#command:           explanation:                        \n"
-            win += "--------------------------------------------------------\n"
-            win += "#recordsamples - $filename.txt $number, records $number of\n"
-            win += "measurements with filename $filename.txt                \n"
-            win += "#recordtime - $filename.txt $time, records the specified  \n"
-            win += "time $time in minutes with filename $filename.txt       \n"
-            win += " into measurement.txt                                   \n"
-            win += "#setcfreq - Changes the current center frequency        \n"
-            win += "#getcfreq - Get the current center frequency            \n"
-            win += "#val - returns the current SDR value (in dBmW/m2)       \n"
-            win += "#quit - Exits the current session                       \n"
+            win =  "Use help $command to get more information about $command \n"
+            win += "Available commands:                                     \n"
+            win += "setloop, origin, rec, recordsamples, recordtime, quit,  \n"
+            win += "plot, quit, mode, setup.                                \n"
+
+        elif(help_command == "setloop"):
+            win = "setloop n sets loop 0,1,2,3 in the antenna               \n"
+            win += "setloop auto makes the antenna switch between loops 1-3 \n"
+            win += "continously. Loop 0 is reset mode when no loop is active \n"
+
+        elif(help_command == "origin"):
+            win = "sets the current GPS coordinates to the origin in the    \n"
+            win += "reference frame.                                        \n"
+
+        elif(help_command == "rec"):
+            win = "starts a continous recording of samples to the chosen file.\n"
+            win += "The command must be on the form: record $filename.       \n"
+            win += "When this recording is running, it is possible to use   \n"
+            win += "pause, stop, start command to control the flow of the   \n"
+            win += "recording. When the recording is paused, use command step \n"
+            win += "to record only one samples from the current antenna     \n"
+            win += "Use command step to step through all 3 loops of the antenna.\n"
+
+        elif(help_command == "recordsamples"):
+            win = "record $num number of samples to $file. The command must be \n "
+            win += "on the form: recordsamples $file $num                   \n"
+
+        elif(help_command == "recordtime"):
+            win = "records for $time seconds to $file. The command must be \n "
+            win += "on the form: recordsamples $file $time                   \n"
 
         elif(help_command == "quit"):
             win = "quit: exits the current session and closes the           \n"
