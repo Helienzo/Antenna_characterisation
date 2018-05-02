@@ -35,7 +35,7 @@ class window():
 
         # Application main info screen 12 rows ------------------------------------------
         win  = "***  Antenna characteriastion aplication   ***\n"
-        win += "***  Temperature in box:     " + "{0:.3}".format(float(self._pos.getTemperature())) + "            ***\n"
+        #win += "***  Temperature in box:     " + "{0:.3}".format(float(self._pos.getTemperature())) + "            ***\n"
         win += "***  Running time:           " + str(self._app.getTime())+ "            ***\n"
         win += "***  current signal strengt: " + "{0:.3}".format(float(self._data.getData(2))) + "        *** \n"
         win += "***  current ceter freq:     " + "{0:.7}".format(float(self._dsp.get_c_freq())) + "      **\n"
