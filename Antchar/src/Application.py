@@ -6,6 +6,7 @@ class Application():
         self.pos = position()
         self.dsp = dsp
         self.data = data
+        self.drone = drone(endEvent,data)
         self.ax1 = ax1
         self.fig = fig
         self.tid = 0
@@ -169,6 +170,14 @@ class Application():
             self.pars.set_status_false()
             self.pars.empty_queue()
 
+        elif command_queue[0] == 'droneconnect':
+            try:
+                self.drone.connect()
+            except IOError:
+                self.info_string = 'Already connected or connection in progress'
+            self.pars.set_status_false()
+            self.pars.empty_queue()
+
         elif command_queue[0] == 'record':
             if self.recEvent.isSet() != True:
                 if len(command_queue) > 1:
@@ -278,6 +287,12 @@ class Application():
                 elif command_queue[1] == "vec":
                     try:
                         self.rec.plottvec(str(command_queue[2]),str(command_queue[3]),self.ax1)
+                        self.plotEvent.set()
+                    except IOError:
+                        self.info_string = 'undefined filename: ' + str(command_queue[1])
+                elif command_queue[1] == "pos":
+                    try:
+                        self.rec.plottpos(str(command_queue[2]),self.ax1,self.pos)
                         self.plotEvent.set()
                     except IOError:
                         self.info_string = 'undefined filename: ' + str(command_queue[1])

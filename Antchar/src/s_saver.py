@@ -29,7 +29,7 @@ class s_saver():
         #------------------------------------------#
         
         #----------RECORDING LOOP--------------------#
-        myFile.write("Nr Etime Raw dBm dBmW/m2 sum:dBmW/m2 loop X Y Z \n")
+        myFile.write("Nr Etime Raw dBm dBmW/m2 sum:dBmW/m2 loop X Y Z long lat droneData: lat long alt pitch yaw roll heading\n")
         while ind < noOfSamples and self.stop_event.isSet() != True:
             self.start_event.clear()
             ind += 1
@@ -39,6 +39,7 @@ class s_saver():
             powVal = self.data.getData(2) #collect the measurement data
             loopVal = self.data.getData(3) #collect the measurement data
             totVal = self.data.getData(4) #collect the measurement data
+            dronedata = self.data.getDroneData()
             X = pos.get_X()
             Y = pos.get_Y()
             Z = pos.get_Z()
@@ -46,7 +47,7 @@ class s_saver():
             lat = pos.get_lat()
             C_time = time.time() # Get current time
             E_time = C_time - S_time # Calculate elapsed 
-            myFile.write("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} \n".format(ind, E_time,rawVal,corrVal,powVal,totVal,loopVal, X, Y, Z, lon, lat))    #write the data to file
+            myFile.write("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} \n".format(ind, E_time,rawVal,corrVal,powVal,totVal,loopVal, X, Y, Z, lon, lat, dronedata[0],dronedata[1],dronedata[2],dronedata[3],dronedata[4],dronedata[5],dronedata[6]))    #write the data to file
             if self.vecsave_event.isSet():
                 vec = self.data.getVector(0)
                 vecRAW = self.data.getVector(1)
@@ -93,7 +94,7 @@ class s_saver():
         #------------------------------------------#
         
         #----------RECORDING LOOP--------------------#
-        myFile.write("Nr Etime Raw dBm dBmW/m2 sum:dBmW/m2 loop X Y Z \n")
+        myFile.write("Nr Etime Raw dBm dBmW/m2 sum:dBmW/m2 loop X Y Z long lat droneData: lat long alt pitch yaw roll heading\n")
         while E_time < noOfTime and self.stop_event.isSet() != True:
             self.start_event.clear()
             self.value_event.wait() # Wait untill new value is available
@@ -103,6 +104,7 @@ class s_saver():
             powVal = self.data.getData(2) #collect the measurement data
             loopVal = self.data.getData(3) #collect the measurement data
             totVal = self.data.getData(4) #collect the measurement data
+            dronedata = self.data.getDroneData()
             X = pos.get_X()
             Y = pos.get_Y()
             Z = pos.get_Z()
@@ -110,7 +112,7 @@ class s_saver():
             lat = pos.get_lat()
             C_time = time.time() # Get current time
             E_time = C_time - S_time # Calculate elapsed 
-            myFile.write("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} \n".format(x, E_time,rawVal,corrVal,powVal,totVal,loopVal, X, Y, Z, lon, lat))    #write the data to file
+            myFile.write("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} \n".format(x, E_time,rawVal,corrVal,powVal,totVal,loopVal, X, Y, Z, lon, lat, dronedata[0],dronedata[1],dronedata[2],dronedata[3],dronedata[4],dronedata[5],dronedata[6]))    #write the data to file
             if self.vecsave_event.isSet():
                 vec = self.data.getVector(0)
                 vecRAW = self.data.getVector(1)
@@ -141,7 +143,9 @@ class s_saver():
 
     def record(self,filename,pos):     #collects and plots signal strength data from the SDR-dongle
         self.rec_event.set()
-        self.pause_event.set()
+        self.pause_event.clear()
+        self.step_event.clear()
+        self.start_event.clear()
         E_time = 0  # Elapsed time
         C_time = 0 # Current time
         S_time = time.time() # Start time   	
@@ -156,9 +160,9 @@ class s_saver():
         #------------------------------------------#
         
         #----------RECORDING LOOP--------------------#
-        myFile.write("Nr Etime Raw dBm dBmW/m2 sum:dBmW/m2 loop X Y Z \n")
+        myFile.write("Nr Etime Raw dBm dBmW/m2 sum:dBmW/m2 loop X Y Z long lat droneData: lat long alt pitch yaw roll heading\n")
         while self.stop_event.isSet() != True:
-            if self.step_event.isSet():
+            if self.step_event.isSet() or self.start_event.isSet():
                 self.value_event.wait() # Wait untill new value is available
                 x += 1 # Amount of samples
                 rawVal = self.data.getData(0) #collect the measurement data
@@ -166,6 +170,7 @@ class s_saver():
                 powVal = self.data.getData(2) #collect the measurement data
                 loopVal = self.data.getData(3) #collect the measurement data
                 totVal = self.data.getData(4) #collect the measurement data
+                dronedata = self.data.getDroneData()
                 X = pos.get_X()
                 Y = pos.get_Y()
                 Z = pos.get_Z()
@@ -173,7 +178,7 @@ class s_saver():
                 lat = pos.get_lat()
                 C_time = time.time() # Get current time
                 E_time = C_time - S_time # Calculate elapsed time
-                myFile.write("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} \n".format(x, E_time,rawVal,corrVal,powVal,totVal,loopVal, X, Y, Z, lon, lat))    #write the data to file
+                myFile.write("{0} {1} {2} {3} {4} {5} {6} {7} {8} {9} {10} {11} {12} {13} {14} {15} {16} {17} {18} \n".format(x, E_time,rawVal,corrVal,powVal,totVal,loopVal, X, Y, Z, lon, lat, dronedata[0],dronedata[1],dronedata[2],dronedata[3],dronedata[4],dronedata[5],dronedata[6]))    #write the data to file
 
                 if self.vecsave_event.isSet():
                     vec = self.data.getVector(0)
@@ -186,7 +191,16 @@ class s_saver():
                     myFilevecRAW.write("\n")
 
                 #print E_time
+
                 self.value_event.clear() # Resets the flag.
+
+                if self.pause_event.isSet():
+                    self.pause_event.clear()
+                    self.start_event.wait()
+
+                    P_time = time.time()-C_time
+                    S_time += P_time
+
                 count += 1
                 if count == 3:
                     count = 0
@@ -222,6 +236,42 @@ class s_saver():
                 #z.append(float(coord[9]))
         plot = ax1.plot(val)
         #plot = ax1.plot([0,100],[0,100],[0,100],label = 'parametric curve')
+
+    def plottpos(self,filename,ax1,pos):
+        s_origin = [6335821.4310934115, np.rad2deg(1.0434507105248343), np.rad2deg(0.3080101271502993)]
+        t_mat = [[0.38771524931916784, 0.38771524931916784, -0.8362737416006499], [-0.41419889165158386, 0.883767445234581, 0.21770250549348494], [0.823478089325985, 0.26197707569349843, 0.5032413419137067]]
+        c_origin = [5217410.1263874294, 1659839.9706340474, 3188447.2791090696]
+        x = []
+        y = []
+        z = []
+        s_coord = [s_origin[0],0,0]
+        c_coord = [0,0,0]
+        lon = []
+        i = 0
+        vec = self.data.getVector(0)
+        myfile = open(str(filename), "r")
+        f = ((np.cos(np.deg2rad(s_origin[1]))/np.sin(np.deg2rad(s_origin[1])))) # GPS Correction factor
+
+        for line in myfile:
+            i += 1
+            coord = line.split(" ")
+            if i>2:
+                if coord[7] != "nan":
+
+                    s_coord[2] = np.deg2rad(f*(float(coord[10])-s_origin[2])+ s_origin[2])
+                    s_coord[1] = np.deg2rad(float(coord[11]))
+                    c_coord = pos.spherical_to_cartisian(s_coord)
+                    v1 = pos.vector_subtraction(c_origin,c_coord)
+                    h1 = pos.vector_scalar_mult(pos.vector_normalize(c_coord),1) # generate hight above ground along new coordinate 
+                    r1 = pos.vector_subtraction(v1,h1) # calculate the r vector from origin to current postion
+                    r1 = pos.matrix_vec_mult(t_mat,r1)
+                    x.append(r1[0])
+                    y.append(r1[1])
+                    z.append(r1[2])
+
+        #plot = ax1.plot(val)
+        plot = ax1.plot(x,y,label = 'parametric curve')
+        
 
     def plottvec(self,filename,vecline,ax1):
         val = []
@@ -259,16 +309,20 @@ class s_saver():
         self.pause_event.set()
 
     def start(self):
+        self.value_event.clear()
         self.start_event.set()
 
     def stop(self):
         self.stop_event.set()
-        self.start_event.set()
+        time.sleep(0.2) # Wait for stop sequence to init
+        self.start_event.set() 
 
     def step(self):
         #self.step_event.set()
-        self.start_event.set()
-        self.pause_event.set()
+        self.value_event.clear()
+        self.step_event.set()
+        #self.start_event.set()
+        #self.pause_event.set()
 
     def step3(self):
         #self.step_event.set()

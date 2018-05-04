@@ -13,7 +13,7 @@ if os.path.exists(home_path + "/wiringPi/"):
 else:
     print "Downloading and installing wiringPi"
     time.sleep(1)
-    os.system("git clone http://github.com/hardkernel/wiringPi")
+    os.system("cd " + home_path + "; git clone http://github.com/hardkernel/wiringPi")
     os.system("cd " + home_path + "/wiringPi/; sudo ./build")
 
 # wiringPi2-python
@@ -22,7 +22,7 @@ if os.path.exists(home_path + "/WiringPi2-Python/"):
 else:
     print "Downloading and installing WiringPi2-python"
     time.sleep(1)
-    os.system("git clone http://github.com/hardkernel/WiringPi2-Python.git")
+    os.system("cd " + home_path + "; git clone http://github.com/hardkernel/WiringPi2-Python.git")
     os.system("cd " + home_path + "/WiringPi2-Python/; git submodule init; git submodule update; ./build.sh")
 
 #Pressuresensor

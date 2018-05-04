@@ -11,6 +11,8 @@ class Data():
         self.totPower = [0]
         self.currentLoop = [0]
         self.NF = 0
+        self.droneData = []
+        self.droneStat = False
     
     #function for other classes to store data in this class
     def setData(self,data,var):
@@ -31,6 +33,18 @@ class Data():
         elif var == 3:
             self.currentLoop[0] = data
     
+    def setDroneData(self,data):
+        self.droneData = data
+
+    def setDroneStat(self,stat):
+        self.droneStat = stat
+
+    def getDroneData(self):
+        return self.droneData
+
+    def getDroneStat(self):
+        return self.droneStat
+
     def esimateNF(self):
         vec_len = len(self.vector_log)
         

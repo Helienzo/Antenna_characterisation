@@ -32,17 +32,17 @@ class window():
             record_string = "Recording"
         else:
             record_string = "Not active"
-
+        droneData = self._data.getDroneData()
         # Application main info screen 12 rows ------------------------------------------
         win  = "***  Antenna characteriastion aplication   ***\n"
         win += "***  Temperature in box:     " + "{0:.3}".format(float(self._pos.getTemperature())) + "            ***\n"
         win += "***  Running time:           " + str(self._app.getTime())+ "            ***\n"
-        win += "***  current signal strengt: " + "{0:.3}".format(float(self._data.getData(2))) + "        *** \n"
-        win += "***  current ceter freq:     " + "{0:.7}".format(float(self._dsp.get_c_freq())) + "      **\n"
-        win += "***  current position X :    " + "{0:.5}".format(float(self._pos.get_X()))  + " **\n"
-        win += "***  current position Y :    " + "{0:.5}".format(float(self._pos.get_Y()))  + " **\n"
-        win += "***  current position Z :    " + "{0:.5}".format(float(self._pos.get_Z()))  + " **\n"
-        win += "***  Recording status : "+ record_string + ", Currentloop: "+ str(self._data.getData(3)) +" **\n"
+        win += "***  current signal strengt: " + "{0:.4}".format(float(self._data.getData(0))) + "        *** \n"
+        win += "***  current ceter freq: " + "{0:.7}".format(float(self._dsp.get_c_freq())) + "      **\n"
+        win += "***  current position X: " + "{0:.5}".format(float(self._pos.get_X()))  +", Pitch: "+ str(droneData[3]) +" **\n"
+        win += "***  current position Y: " + "{0:.5}".format(float(self._pos.get_Y()))  +", Yaw:   "+ str(droneData[4]) +" **\n"
+        win += "***  current position Z: " + "{0:.5}".format(float(self._pos.get_Z()))  +", Roll:  "+ str(droneData[5]) +" **\n"
+        win += "***  Recording status : "+ record_string + ", Currentloop: "+ str(self._data.getData(3)) +", Drone Connect: " + str(self._data.getDroneStat()) +" \n"
         win += "***  avilable commands: setcfreq, getcfreq, val, quit, origin  ***\n"
         win += "***  recordtime, recordsamples, plot                           ***\n"
         win += "******************************************************************\n"

@@ -42,6 +42,7 @@ from window import window
 from parser import parser
 from Barometer import Barometer
 from s_saver import s_saver
+from drone import drone
 from Application import Application
 
 
