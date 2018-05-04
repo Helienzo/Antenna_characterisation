@@ -28,6 +28,7 @@ class Application():
         self.stdscr.nodelay(1)
         self.stdscr.keypad(1)
         self.running = True
+        self.Calibration = Calibration(self.data,self.rec,self.pos)
 
         self.window = window(self.stdscr,self.pos,self.dsp,self.data,
                             self.pars,self.recEvent,self.rec,self)
@@ -203,6 +204,17 @@ class Application():
                     self.info_string = "record command must have a value and name input" # Change to helpfunction
             else:
                 self.info_string = "Already recording"
+            self.pars.set_status_false()
+            self.pars.empty_queue()
+
+        elif command_queue[0] == 'calibration':
+            if self.recEvent.isSet() != True:
+                try:
+                    self.Calibration.calibrationThread()
+                except IOError:
+                    self.info_string = "Calibration or recording in progress"
+            else:
+                self.info_string = "Cannot calibrate while calibrating or recording"
             self.pars.set_status_false()
             self.pars.empty_queue()
 

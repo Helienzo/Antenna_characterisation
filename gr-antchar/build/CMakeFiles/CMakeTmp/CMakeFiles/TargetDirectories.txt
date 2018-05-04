@@ -1,3 +1,0 @@
-/home/odroid/Antenna_characterisation/gr-antchar/build/CMakeFiles/CMakeTmp/CMakeFiles/edit_cache.dir
-/home/odroid/Antenna_characterisation/gr-antchar/build/CMakeFiles/CMakeTmp/CMakeFiles/rebuild_cache.dir
-/home/odroid/Antenna_characterisation/gr-antchar/build/CMakeFiles/CMakeTmp/CMakeFiles/cmTC_45996.dir

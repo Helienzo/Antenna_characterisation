@@ -1,6 +1,5 @@
 #import __init__
 from src import *
-from Barometer import Barometer
 import numpy as np
 from gps import *
 import threading
@@ -10,7 +9,7 @@ import matplotlib.pyplot as plt
 import mpl_toolkits.mplot3d.axes3d as axes3d
 import csv
 class GpsPoller(threading.Thread):
-    
+
     def __init__(self):
     	threading.Thread.__init__(self)
     	global gpsd #bring it in scope
@@ -28,7 +27,7 @@ gpsp = GpsPoller()
 
 class position(GpsPoller):
 
-    def __init__(self): #starts the thread that collects data in the background 
+    def __init__(self): #starts the thread that collects data in the background
         thread = threading.Thread(target=self.data, args = ())
         thread.daemon = True
         thread.start()
@@ -80,8 +79,8 @@ class position(GpsPoller):
 
     def vector_length(self,b_1):
         l_1 = np.sqrt( b_1[0]*b_1[0] + b_1[1]*b_1[1] + b_1[2]*b_1[2] )
-        return l_1  
-        
+        return l_1
+
     def vector_scalar_mult(self,vec,scal):
         ret_vec = [0,0,0]
         ret_vec[0] = vec[0]*scal
@@ -148,7 +147,7 @@ class position(GpsPoller):
     pressure = 0
     o_pressure = 1044
     R = 6335439.2988979854
-    bar = Barometer()
+    bar = [] #Barometer()
     z_o = [0,0,0]
     y_o = [0,0,0]
     x_o = [0,0,0]
@@ -161,7 +160,7 @@ class position(GpsPoller):
         pressDiff = (self.o_pressure/self.pressure)
         h = (287.05/9.80665)*np.log(pressDiff)*((2*273.15 + self.temp + self.o_temp)/2.0)
         return h
-    
+
     def getTemperature(self):
         return self.bar.readTemperature()
 
@@ -170,13 +169,13 @@ class position(GpsPoller):
             self.theta = gpsd.fix.latitude
             self.phi = gpsd.fix.longitude
             self.alt = gpsd.fix.altitude
-            self.temp = self.bar.readTemperature()
-            self.pressure = self.bar.readPressure() # Get pressure in heteropascal
-            
+            #self.temp = self.bar.readTemperature()
+            #self.pressure = self.bar.readPressure() # Get pressure in heteropascal
+
             self.s_coord = [self.R, np.deg2rad(self.theta), np.deg2rad(self.phi)] # get spherical gps coordinates
             self.c_coord = self.spherical_to_cartisian(self.s_coord) # convert from spherical to cartesian
             self.v1 = self.vector_subtraction(self.c_origin,self.c_coord) # get vector from origin to current position
-            self.h1 = self.vector_scalar_mult(self.vector_normalize(self.c_coord),self.calcAltitude()) # generate hight above ground along new coordinate 
+            self.h1 = self.vector_scalar_mult(self.vector_normalize(self.c_coord),self.calcAltitude()) # generate hight above ground along new coordinate
             self.r1 = self.vector_subtraction(self.v1,self.h1) # calculate the r vector from origin to current postion
             self.r1 = self.matrix_vec_mult(self.t_mat,self.r1)
             self.Xcord = self.r1[0]
@@ -193,18 +192,18 @@ class position(GpsPoller):
         print self.c_origin[1]
         print self.c_origin[2]
         wFile = open("xyz.txt", "w")
-        myFile = open(str(filename), "r") 
+        myFile = open(str(filename), "r")
         for line in myFile:
             coord = line.split(" ")
             self.theta = float(coord[8])
             self.phi = float(coord[9])
             self.temp = 25#self.bar.readTemperature()
             self.pressure = 1024#self.bar.readPressure() # Get pressure in heteropascal
-            
+
             self.s_coord = [self.R, np.deg2rad(self.theta), np.deg2rad(self.phi)] # get spherical gps coordinates
             self.c_coord = self.spherical_to_cartisian(self.s_coord) # convert from spherical to cartesian
             self.v1 = self.vector_subtraction(self.c_origin,self.c_coord) # get vector from origin to current position
-            self.h1 = self.vector_scalar_mult(self.vector_normalize(self.c_coord),self.calcAltitude()) # generate hight above ground along new coordinate 
+            self.h1 = self.vector_scalar_mult(self.vector_normalize(self.c_coord),self.calcAltitude()) # generate hight above ground along new coordinate
             self.r1 = self.vector_subtraction(self.v1,self.h1) # calculate the r vector from origin to current postion
 
             self.r1 = self.matrix_vec_mult(self.t_mat,self.r1)
@@ -227,9 +226,9 @@ class position(GpsPoller):
         self.c_origin = self.spherical_to_cartisian(self.s_origin) # origin in cartesian coord
         # Make a basis
         self.z_o = self.vector_normalize(self.c_origin) # Normal vector to the plane
-        self.x_o = self.vector_normalize([1,1,-(self.z_o[0]+self.z_o[1])/self.z_o[2]]) 
+        self.x_o = self.vector_normalize([1,1,-(self.z_o[0]+self.z_o[1])/self.z_o[2]])
         self.y_o = self.vector_normalize(self.cross_prod(self.z_o,self.x_o))
-        # Make a transition matrix        
+        # Make a transition matrix
         self.t_mat = self.gen_base_trans_mat(self.x_o, self.y_o, self.z_o) # From local to earth
         self.t_mat = np.ndarray.tolist(np.linalg.inv(self.t_mat)) #from earth to local
         self.o_pressure = self.pressure # set origin pressure
@@ -253,9 +252,9 @@ class position(GpsPoller):
 
     def setZo(self,val):
         self.z_o = val
-        # load a transition matrix   
+        # load a transition matrix
 
-    def setTmat(self,val):     
+    def setTmat(self,val):
         self.t_mat = val # From local to earth
 
     def setOpressure(self,val):
@@ -310,8 +309,8 @@ class position(GpsPoller):
         return self.Zcord
 
 
-    
-    def stop(self): #starts the thread that collects data in the background 
+
+    def stop(self): #starts the thread that collects data in the background
         print ""
 
 def main():
@@ -337,6 +336,6 @@ def main():
         plt.show()
     except KeyboardInterrupt, SystemExit:
         running = False
-           
+
 if __name__ == '__main__':
     main()

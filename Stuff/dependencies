@@ -1,16 +1,14 @@
-pip
-pybombs
-gnuplot
-python-gnuplot
-gnuradio
-libusb
-python-gps
-git
-cmake
-swig
-doxygen
-osmosdr
-rtl-sdr
-wiringPI (odroid)
-gpsd
+pip (via apt-get)
+pybombs (via pip)
+gnuradio (apt-get)
+libusb (apt-get)
+python-gps 
+git (apt-get) (Need an account for this to work)
+cmake (apt-get) (special)
+swig (apt-get)
+doxygen (apt-get)
+osmosdr (build via git)
+rtl-sdr (apt-get)
+wiringPI (odroid) (apt-get)
+gpsd (apt-get????)
 #source /home/odroid/prefix/default/setup_env.sh
