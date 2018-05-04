@@ -18,7 +18,7 @@ class dsp():
         vlen = self.dspProcess.get_fft_size()
         self.antenna = Antenna(dec,vlen)
         self.controller_thread = threading.Thread(target = self.controller)
-        self.controller_thread.deamon = True 
+        self.controller_thread.deamon = True
         self.controller_thread.start()
         self.currentLoop = 0
         self.autoSwitch = True
@@ -50,6 +50,7 @@ class dsp():
 
     def getLockMode(self):
         return not self.auto_run
+        
     def update(self):
         self.dspProcess.reset()
         self.dspProcess.start()
@@ -122,9 +123,9 @@ class dsp():
 #    data = Data()
 #    dspmain = dsp(data)
 #    #print data.getVector()
-    
-    
-    
+
+
+
 
 
 

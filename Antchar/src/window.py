@@ -38,6 +38,7 @@ class window():
         #win += "***  Temperature in box:     " + "{0:.3}".format(float(self._pos.getTemperature())) + "            ***\n"
         win += "***  Running time:           " + str(self._app.getTime())+ "            ***\n"
         win += "***  current signal strengt: " + "{0:.3}".format(float(self._data.getData(2))) + "        *** \n"
+        win += "***  current SNR :           " + "{0:.3}".format(float.self_data.getData(2)-calibrate.getNoiseFloor()) + "  ** \n"
         win += "***  current ceter freq:     " + "{0:.7}".format(float(self._dsp.get_c_freq())) + "      **\n"
         win += "***  current position X :    " + "{0:.5}".format(float(self._pos.get_X()))  + " **\n"
         win += "***  current position Y :    " + "{0:.5}".format(float(self._pos.get_Y()))  + " **\n"
@@ -102,14 +103,6 @@ class window():
             win += "to record only one samples from the current antenna     \n"
             win += "Use command step to step through all 3 loops of the antenna.\n"
 
-        elif(help_command == "recordsamples"):
-            win = "record $num number of samples to $file. The command must be \n "
-            win += "on the form: recordsamples $file $num                   \n"
-
-        elif(help_command == "recordtime"):
-            win = "records for $time seconds to $file. The command must be \n "
-            win += "on the form: recordsamples $file $time                   \n"
-
         elif(help_command == "quit"):
             win = "quit: exits the current session and closes the           \n"
             win += "terminal window                                         \n"
@@ -142,29 +135,34 @@ class window():
             win +=  "turn off auto at the moment other than just choosing a  \n"
             win +=  "specific loop.                                          \n"
 
-        elif(help_command == "origin"):
-            win =   "sets the current GPS-coordinates as origin in the local \n"
-            win +=  "coordinate system                                       \n"
+        elif(help_command == "calibration"):
+            win = "Should only be used without real measurement signal.      \n"
+            win += "Records 100 samples and finds the top value and sets    \n"
+            win += "the noise floor to that value                           \n"
 
-        elif(help_command == "val"):
-            win =   "returns the signal strength that the SDR-dongle is     \n"
-            win +=  "measuring in dBm                                       \n"
+        elif(help_command == "setup"):
+            win = "Opens the setup menu where all parameters are listed. \n"
+            win += "It is also possible to load an existing setup file  \n"
+            win += "from the setup menu."
 
-        elif(help_command == "val"):
-            win =   "returns the signal strength that the SDR-dongle is     \n"
-            win +=  "measuring in dBm                                       \n"
+        elif(help_command) == "mode":
+            win = "mode $mode_variant                                   \n"
+            win += "There are 4 mode variants. They are not mutually exclusive \n"
+            win += "The variants are: lock True/False; update; vecsave True/False \n"
+            win += "and delay $value                                    \n"
+            win += "Lock is used to lock or unlock the DSP process          \n"
+            win += "Update manually updates the DSP process if it is locked \n"
+            win += "Vecsave either saves or doesn't save the FFT vector     \n"
+            win += "Delay sets a delay between the DSP loops when it is running \n"
+            win += "automatically.                                          \n"
 
-        elif(help_command == "val"):
-            win =   "returns the signal strength that the SDR-dongle is     \n"
-            win +=  "measuring in dBm                                       \n"
-
-        elif(help_command == "val"):
-            win =   "returns the signal strength that the SDR-dongle is     \n"
-            win +=  "measuring in dBm                                       \n"
-
-        elif(help_command == "val"):
-            win =   "returns the signal strength that the SDR-dongle is     \n"
-            win +=  "measuring in dBm                                       \n"
+        elif(help_command) == "plot":
+            win += "It is possible to plot or clear a current plot with this \n"
+            win += "command.                                                \n"
+            win += "plot clear - Clears the current plot window             \n"
+            win += "plot close - Closes the current plot window             \n"
+            win += "plot vec $filename - plots the FFT vector from $file    \n"
+            win += "plot $filename -    plots the measurement values from $file \n"
         else:
             raise SyntaxError
         return win

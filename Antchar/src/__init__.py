@@ -42,4 +42,5 @@ from window import window
 from parser import parser
 #from Barometer import Barometer
 from s_saver import s_saver
+from Calibration import Calibration
 from Application import Application
