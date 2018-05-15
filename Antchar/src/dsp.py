@@ -7,13 +7,15 @@ from gr_antenna import gr_antenna
 
 class dsp():
 
-    def __init__(self,data,endEvent):
+    def __init__(self,data,endEvent,processEvent):
         self.endEvent = endEvent
+        self.processEvent = processEvent
         self.data = data
         self.del_time = 0
         self.auto_run = True
         self.dataEvent = threading.Event()
-        self.dspProcess = gnuradiodatacollector(data)
+        self.recloopEvent = threading.Event()
+        self.dspProcess = gnuradiodatacollector(data,self.processEvent)
         dec = self.dspProcess.get_FIR_decimation()
         vlen = self.dspProcess.get_fft_size()
         self.antenna = Antenna(dec,vlen)
@@ -22,22 +24,38 @@ class dsp():
         self.controller_thread.start()
         self.currentLoop = 0
         self.autoSwitch = True
-
+        
 
     def endProcess(self):
         self.dspProcess.stop()
         self.dspProcess.wait()
 
     def controller(self):
+        #self.dspProcess.set_select(1)
+        self.dspProcess.start()
+        time.sleep(2)
+        #self.processEvent.set()
         while self.endEvent.isSet() != True:
             if self.auto_run == True:
-                self.dspProcess.reset()
-                self.dspProcess.start()
-                self.dspProcess.wait()
-                self.data.setData(self.antenna.getCurrentLoop(),3)
-                self.dataEvent.set()
-                self.loop()
-                time.sleep(self.del_time)
+                #self.dspProcess.reset()
+                #self.dspProcess.start()
+                #self.dspProcess.wait()
+                self.processEvent.wait()
+
+                if self.data.getVector(1)[0] != 0:
+                    self.dspProcess.set_select(1) # Null source
+                    self.data.setData(self.antenna.getCurrentLoop(),3)
+                    self.dataEvent.set()
+                    self.loop()
+                    self.recloopEvent.wait()
+                    self.recloopEvent.clear()
+                    time.sleep(self.del_time)
+                    self.dspProcess.set_select(0)
+                    self.processEvent.clear()
+                    
+                else:
+                    self.processEvent.clear()
+
             else:
                 time.sleep(0.1)
         self.endProcess()
@@ -96,6 +114,9 @@ class dsp():
 
     def getDataEvent(self):
         return self.dataEvent
+
+    def getRecloopEvent(self):
+        return self.recloopEvent
 
     def getDecimation(self):
         return self.dspProcess.get_FIR_decimation()

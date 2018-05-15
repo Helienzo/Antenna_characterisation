@@ -1,5 +1,6 @@
 #import __init__
 from src import *
+from Barometer import Barometer
 import numpy as np
 from gps import *
 import threading
@@ -144,10 +145,10 @@ class position(GpsPoller):
     alt = 0
     temp = 0
     o_temp = 25
-    pressure = 0
+    pressure = 1
     o_pressure = 1044
     R = 6335439.2988979854
-    bar = [] #Barometer()
+    bar = Barometer()
     z_o = [0,0,0]
     y_o = [0,0,0]
     x_o = [0,0,0]
@@ -169,8 +170,8 @@ class position(GpsPoller):
             self.theta = gpsd.fix.latitude
             self.phi = gpsd.fix.longitude
             self.alt = gpsd.fix.altitude
-            #self.temp = self.bar.readTemperature()
-            #self.pressure = self.bar.readPressure() # Get pressure in heteropascal
+            self.temp = self.bar.readTemperature()
+            self.pressure = self.bar.readPressure() # Get pressure in heteropascal
 
             self.s_coord = [self.R, np.deg2rad(self.theta), np.deg2rad(self.phi)] # get spherical gps coordinates
             self.c_coord = self.spherical_to_cartisian(self.s_coord) # convert from spherical to cartesian
@@ -186,8 +187,8 @@ class position(GpsPoller):
     def test(self,filename,start):
         self.s_coord[1] = np.deg2rad(float(start[0]))
         self.s_coord[2] = np.deg2rad(float(start[1]))
-        self.temp = 25#self.bar.readTemperature()
-        self.pressure = 1024#self.bar.readPressure()
+        self.temp = self.bar.readTemperature()
+        self.pressure = self.bar.readPressure()
         self.set_origin()
         print self.c_origin[1]
         print self.c_origin[2]
@@ -197,8 +198,8 @@ class position(GpsPoller):
             coord = line.split(" ")
             self.theta = float(coord[8])
             self.phi = float(coord[9])
-            self.temp = 25#self.bar.readTemperature()
-            self.pressure = 1024#self.bar.readPressure() # Get pressure in heteropascal
+            self.temp = self.bar.readTemperature()
+            self.pressure = self.bar.readPressure() # Get pressure in heteropascal
 
             self.s_coord = [self.R, np.deg2rad(self.theta), np.deg2rad(self.phi)] # get spherical gps coordinates
             self.c_coord = self.spherical_to_cartisian(self.s_coord) # convert from spherical to cartesian

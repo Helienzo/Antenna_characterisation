@@ -4,8 +4,9 @@ import math
 import csv
 class s_saver():
 
-    def __init__(self,value_event,data,rec_event):
+    def __init__(self,value_event,recloopEvent,data,rec_event):
         self.value_event = value_event  # threading event from gnuradio, is set when new value is aviable
+        self.recloopEvent = recloopEvent
         self.rec_event = rec_event # recording event
         self.data = data
         self.vecsave_event = threading.Event()
@@ -67,6 +68,7 @@ class s_saver():
                 P_time = time.time()-C_time
                 S_time += P_time
             self.value_event.clear() # Resets the flag.
+            self.recloopEvent.set()
 
         myFile.close()  #close and save the file
         if self.vecsave_event.isSet():
@@ -124,7 +126,7 @@ class s_saver():
                 myFilevecRAW.write("\n")
             #print E_time
             self.value_event.clear() # Resets the flag.
-            
+            self.recloopEvent.set() 
             if self.pause_event.isSet():
                 self.pause_event.clear()
                 self.start_event.wait()
@@ -193,7 +195,7 @@ class s_saver():
                 #print E_time
 
                 self.value_event.clear() # Resets the flag.
-
+                self.recloopEvent.set()
                 if self.pause_event.isSet():
                     self.pause_event.clear()
                     self.start_event.wait()

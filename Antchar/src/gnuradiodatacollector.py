@@ -3,12 +3,13 @@ from gr_antenna import gr_antenna
 import antchar
 class gnuradiodatacollector(gr_antenna):
 
-    def __init__(self,data):
+    def __init__(self,data,processEvent):
         super(gnuradiodatacollector,self).__init__()
-
+        self.processEvent = processEvent
         ##################################################
         # Blocks
         ##################################################
+        self.antchar_event_sink_ff_0 = antchar.event_sink_f(processEvent)
         self.antchar_value_sink_ff_0 = antchar.value_sink_ff(data,0)
         self.antchar_value_sink_ff_1 = antchar.value_sink_ff(data,1)
         self.antchar_value_sink_ff_2 = antchar.value_sink_ff(data,2)
@@ -18,12 +19,15 @@ class gnuradiodatacollector(gr_antenna):
         ##################################################
         # Connections
         ##################################################
+        self.connect((self.blocks_max_xx_0, 0), (self.antchar_event_sink_ff_0, 0))
         self.connect((self.blocks_nlog10_ff_0, 0), (self.antchar_vector_sink_f_0, 0))
         self.connect((self.blocks_stream_to_vector_0, 0), (self.antchar_vector_sink_f_1, 0))
         self.connect((self.blocks_max_xx_0, 0), (self.antchar_value_sink_ff_0, 0))
         self.connect((self.antchar_dbm_correction_py_ff_0, 0), (self.antchar_value_sink_ff_1, 0))
         self.connect((self.antchar_E_field_calc_ff_0, 0), (self.antchar_value_sink_ff_2, 0))
 
-    def reset(self):
-        self.blocks_head_0_0_0.reset()
-
+    def set_select(self,val):
+        self.select = val
+        self.antchar_select_ff_0.set_select(int(self.select))
+    #def reset(self):
+     #   self.blocks_head_0_0_0.reset()

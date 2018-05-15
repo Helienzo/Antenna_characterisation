@@ -1,31 +1,39 @@
 from src import *
 
 class Calibration():
-    def __init__(self, data, rec, pos):
+    def __init__(self, data, rec, pos,recEvent):
         self._data = data
         self._rec = rec
         self._pos = pos
         self._calThread = threading.Thread(target = self.recCalibration)
         self.nf_max = 0
+        self._recEvent = recEvent
 
     def calibrate(self):
+
         myFile = open("calibration.txt",'r')
+        i = 0
         for line in myFile:
+            i += 1
             currLine = line.split(" ")
-            if line > 1:
+            #print self.nf_max
+            if i == 2:
                 self.nf_max = float(currLine[2])
-            if line > 2:
+                #print currLine[2]
+            elif i > 2:
                 if float(currLine[2]) > self.nf_max:
-                    self.nf_max = currLine[2]
+                    self.nf_max = float(currLine[2])
+
+        myFile.close()
 
     def recCalibration(self):
-        self._rec.recThread_samples("calibration", 100, self._pos)
-        self._recEvent.wait()
-        time.sleep(1)
+        self._rec.recThread_samples("calibration", 50, self._pos)
+        while self._recEvent.isSet():
+            time.sleep(2)
         self.calibrate()
 
     def calibrationThread(self):
-        if !self._calThread.isAlive():
+        if self._calThread.isAlive() != True:
             self._calThread = threading.Thread(target = self.recCalibration)
             self._calThread.daemon = True
             self._calThread.start()
@@ -33,8 +41,8 @@ class Calibration():
             raise IOError
 
 
-    def getNoiseFloor():
+    def getNoiseFloor(self):
         return self.nf_max
 
     def getSNR(self):
-        return (data.getData(2) - self.nf_max)
+        return (self._data.getData(0)-self.nf_max)

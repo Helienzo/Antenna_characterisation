@@ -8,14 +8,14 @@ class Antenna():
         self.dec = dec
         self.v_len = v_len
         self.count_nr = int(self.dec*self.v_len)
-        #print self.count_nr
-#        wpi.wiringPiSetupGpio()
+        print self.count_nr
+        wpi.wiringPiSetupGpio()
         self.currLoop = 1    #stores what loop is currently active
         self.counter = 0     #sets the counter to 0.
         self.pin1 = 21
         self.pin2 = 22
-#        wpi.pinMode(self.pin1,wpi.GPIO.OUTPUT) #selects GPIO #21 on the odroid board
-#        wpi.pinMode(self.pin2,wpi.GPIO.OUTPUT) #selects GPIO #22 on the odroid board
+        wpi.pinMode(self.pin1,wpi.GPIO.OUTPUT) #selects GPIO #21 on the odroid board
+        wpi.pinMode(self.pin2,wpi.GPIO.OUTPUT) #selects GPIO #22 on the odroid board
 
     def setLoop(self,loop):
         if loop == 1:
@@ -28,24 +28,24 @@ class Antenna():
             self.reset()
 
     def loopOne(self):
-#        wpi.digitalWrite(self.pin2,1)
+        wpi.digitalWrite(self.pin2,1)
         #time.sleep(0.05)
-#        wpi.digitalWrite(self.pin1,0)
+        wpi.digitalWrite(self.pin1,0)
         self.currLoop = 1
 
     def loopTwo(self):
-#        wpi.digitalWrite(self.pin2,1)
-#        wpi.digitalWrite(self.pin1,1)
+        wpi.digitalWrite(self.pin2,1)
+        wpi.digitalWrite(self.pin1,1)
         self.currLoop = 2
 
     def loopThree(self):
-#        wpi.digitalWrite(self.pin2,0)
-#        wpi.digitalWrite(self.pin1,1)
+        wpi.digitalWrite(self.pin2,0)
+        wpi.digitalWrite(self.pin1,1)
         self.currLoop = 3
 
     def reset(self):
-#        wpi.digitalWrite(self.pin2,0)
-#        wpi.digitalWrite(self.pin1,0)
+        wpi.digitalWrite(self.pin2,0)
+        wpi.digitalWrite(self.pin1,0)
         self.currLoop = 0
 
     def loopSwitch(self):

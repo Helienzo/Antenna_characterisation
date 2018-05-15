@@ -13,11 +13,12 @@ class Application():
         self.info_string = ""
         self.plotEvent = threading.Event()
         self.dataEvent = dsp.getDataEvent() # Threading event for new value
+        self.recloopEvent = dsp.getRecloopEvent()
         self.recEvent = threading.Event() # Threading event for recoding or not
         self.endEvent = endEvent # Threading event for killing the aplication
         self.pars = parser()
         self.value = [0] # measurment value
-        self.rec = s_saver(self.dataEvent,data,self.recEvent)
+        self.rec = s_saver(self.dataEvent,self.recloopEvent,data,self.recEvent)
         self.config = config(self.pos,dsp,self.rec)
         self.centerFrequencyLineNo = 0
         self.vectorRecLineNo = 0
@@ -28,10 +29,10 @@ class Application():
         self.stdscr.nodelay(1)
         self.stdscr.keypad(1)
         self.running = True
-        self.Calibration = Calibration(self.data,self.rec,self.pos)
+        self.Calibration = Calibration(self.data,self.rec,self.pos,self.recEvent)
 
         self.window = window(self.stdscr,self.pos,self.dsp,self.data,
-                            self.pars,self.recEvent,self.rec,self)
+                            self.pars,self.recEvent,self.rec,self,self.Calibration)
 
         #Start the thread
         self.app_thread =threading.Thread(target=self.app)
@@ -87,6 +88,8 @@ class Application():
                 self.window.update(self.currentWindow)
                 self.info_string = ""
                 self.stdscr.refresh()
+                if self.recEvent.isSet() != True:
+                    self.recloopEvent.set()
 
         except (KeyboardInterrupt,SystemExit): #when you press ctrl+c
             curses.nocbreak()

@@ -1,7 +1,7 @@
 from src import *
 
 class window():
-    def __init__(self,stdscr,pos,dsp,data,pars,recEvent,rec,app):
+    def __init__(self,stdscr,pos,dsp,data,pars,recEvent,rec,app,calibrate):
         self._stdscr = stdscr
         self._pos = pos
         self._dsp = dsp
@@ -12,6 +12,7 @@ class window():
         self._recEvent = recEvent
         self._centerFrequency = 0
         self._vectorRec = 0
+        self._calibrate = calibrate
 
 
 
@@ -37,7 +38,7 @@ class window():
         win  = "***  Antenna characteriastion aplication   ***\n"
         win += "***  Temperature in box:     " + "{0:.3}".format(float(self._pos.getTemperature())) + "            ***\n"
         win += "***  Running time:           " + str(self._app.getTime())+ "            ***\n"
-        win += "***  current signal strengt: " + "{0:.4}".format(float(self._data.getData(0))) + ", current SNR :" + "{0:.3}".format(float.self_data.getData(2)-calibrate.getNoiseFloor())+ " ** \n"
+        win += "***  current signal strengt: " + "{0:.4}".format(float(self._data.getData(0))) + ", current SNR :" + "{0:.4}".format(float(self._calibrate.getSNR()))+ " ** \n"
         win += "***  current ceter freq: " + "{0:.7}".format(float(self._dsp.get_c_freq())) + "      **\n"
         win += "***  current position X: " + "{0:.5}".format(float(self._pos.get_X()))  +", Pitch: "+ str(droneData[3]) +" **\n"
         win += "***  current position Y: " + "{0:.5}".format(float(self._pos.get_Y()))  +", Yaw:   "+ str(droneData[4]) +" **\n"

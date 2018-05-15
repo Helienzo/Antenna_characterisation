@@ -3,9 +3,10 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Gr Antenna
-# Generated: Thu Apr 12 09:20:16 2018
+# Generated: Wed May  9 12:55:45 2018
 ##################################################
 
+from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import eng_notation
 from gnuradio import fft
@@ -33,6 +34,7 @@ class gr_antenna(gr.top_block):
         self.cutoff = cutoff = 9.1e3
         self.lowpasstaps = lowpasstaps = firdes.low_pass_2(1, samp_rate, cutoff,transition, 120,firdes.WIN_BLACKMAN, 6.76)
         self.c_freq = c_freq = 96.1e6
+        self.select = select = 0
         self.number_of_taps_FIR = number_of_taps_FIR = len(lowpasstaps)
         self.loop = loop = 1
         self.fft_size = fft_size = 8192
@@ -57,40 +59,47 @@ class gr_antenna(gr.top_block):
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(0, 0)
 
-        self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccf(FIR_decimation, (lowpasstaps), 500e3, samp_rate)
+        self.fir_filter_xxx_0 = filter.fir_filter_ccf(FIR_decimation, (lowpasstaps))
+        self.fir_filter_xxx_0.declare_sample_delay(0)
         self.fft_vxx_0 = fft.fft_vcc(fft_size, True, (window.blackmanharris(fft_size)), True, 1)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_stream_to_vector_0_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_stream_to_vector_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fft_size)
+        self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*1)
         self.blocks_nlog10_ff_0 = blocks.nlog10_ff(10, fft_size, 0)
+        self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((1.0/float(fft_size), ))
         self.blocks_max_xx_0 = blocks.max_ff(fft_size,1)
-        self.blocks_head_0_0_0 = blocks.head(gr.sizeof_gr_complex*1, FIR_decimation*fft_size)
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(fft_size)
+        self.antchar_select_ff_0 = antchar.select_ff(select)
         self.antchar_dbm_correction_py_ff_0 = antchar.dbm_correction_py_ff((c_freq+0.5e6)/1.0e6)
         self.antchar_antenna_polarization_adder_ff_0 = antchar.antenna_polarization_adder_ff()
         self.antchar_E_field_calc_ff_0 = antchar.E_field_calc_ff((c_freq+0.5e6)/1.0e6)
+        self.analog_sig_source_x_0 = analog.sig_source_c(samp_rate, analog.GR_COS_WAVE, -500e3, 1, 0)
 
 
 
         ##################################################
         # Connections
         ##################################################
+        self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_xx_0, 1))
         self.connect((self.antchar_E_field_calc_ff_0, 0), (self.antchar_antenna_polarization_adder_ff_0, 0))
         self.connect((self.antchar_antenna_polarization_adder_ff_0, 0), (self.blocks_null_sink_0, 0))
         self.connect((self.antchar_dbm_correction_py_ff_0, 0), (self.antchar_E_field_calc_ff_0, 0))
+        self.connect((self.antchar_select_ff_0, 0), (self.blocks_multiply_xx_0, 0))
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.blocks_nlog10_ff_0, 0))
-        self.connect((self.blocks_head_0_0_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
         self.connect((self.blocks_max_xx_0, 0), (self.antchar_dbm_correction_py_ff_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_stream_to_vector_0_0, 0))
+        self.connect((self.blocks_multiply_xx_0, 0), (self.fir_filter_xxx_0, 0))
         self.connect((self.blocks_nlog10_ff_0, 0), (self.blocks_max_xx_0, 0))
+        self.connect((self.blocks_null_source_0, 0), (self.antchar_select_ff_0, 1))
         self.connect((self.blocks_stream_to_vector_0, 0), (self.fft_vxx_0, 0))
         self.connect((self.blocks_stream_to_vector_0_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
-        self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.blocks_stream_to_vector_0, 0))
-        self.connect((self.osmosdr_source_0, 0), (self.blocks_head_0_0_0, 0))
+        self.connect((self.fir_filter_xxx_0, 0), (self.blocks_stream_to_vector_0, 0))
+        self.connect((self.osmosdr_source_0, 0), (self.antchar_select_ff_0, 0))
 
     def get_transition(self):
         return self.transition
@@ -106,6 +115,7 @@ class gr_antenna(gr.top_block):
         self.samp_rate = samp_rate
         self.set_lowpasstaps(firdes.low_pass_2(1, self.samp_rate, self.cutoff,self.transition, 120,firdes.WIN_BLACKMAN, 6.76))
         self.osmosdr_source_0.set_sample_rate(self.samp_rate)
+        self.analog_sig_source_x_0.set_sampling_freq(self.samp_rate)
 
     def get_cutoff(self):
         return self.cutoff
@@ -120,7 +130,7 @@ class gr_antenna(gr.top_block):
     def set_lowpasstaps(self, lowpasstaps):
         self.lowpasstaps = lowpasstaps
         self.set_number_of_taps_FIR(len(self.lowpasstaps))
-        self.freq_xlating_fir_filter_xxx_0.set_taps((self.lowpasstaps))
+        self.fir_filter_xxx_0.set_taps((self.lowpasstaps))
 
     def get_c_freq(self):
         return self.c_freq
@@ -132,6 +142,13 @@ class gr_antenna(gr.top_block):
         self.set_channel_freq(self.c_freq+0.5e6)
         self.antchar_dbm_correction_py_ff_0.set_freq((self.c_freq+0.5e6)/1.0e6)
         self.antchar_E_field_calc_ff_0.set_freq((self.c_freq+0.5e6)/1.0e6)
+
+    def get_select(self):
+        return self.select
+
+    def set_select(self, select):
+        self.select = select
+        self.antchar_select_ff_0.set_select(self.select)
 
     def get_number_of_taps_FIR(self):
         return self.number_of_taps_FIR
@@ -151,7 +168,6 @@ class gr_antenna(gr.top_block):
     def set_fft_size(self, fft_size):
         self.fft_size = fft_size
         self.blocks_multiply_const_vxx_0.set_k((1.0/float(self.fft_size), ))
-        self.blocks_head_0_0_0.set_length(self.FIR_decimation*self.fft_size)
 
     def get_channel_in_mhz(self):
         return self.channel_in_mhz
@@ -176,7 +192,6 @@ class gr_antenna(gr.top_block):
 
     def set_FIR_decimation(self, FIR_decimation):
         self.FIR_decimation = FIR_decimation
-        self.blocks_head_0_0_0.set_length(self.FIR_decimation*self.fft_size)
 
 
 def main(top_block_cls=gr_antenna, options=None):

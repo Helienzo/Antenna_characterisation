@@ -12,11 +12,14 @@ def main():
     # Init all parts of application
     try:
         endEvent = threading.Event()
+        processEvent = threading.Event()
+        processEvent.clear()
         fig = plt.figure(1) # Plot figure
         ax1 = fig.gca() # Plot data
         #ax1 = fig.add_subplot(111)
         data = Data() # The data class that contains all data
-        dspProcces = dsp(data,endEvent) # The signalproccesing block
+        dspProcces = dsp(data,endEvent,processEvent) # The signalproccesing block
+        #time.sleep(5)
         app = Application(dspProcces,data,ax1,fig,endEvent) # Terminal application
         plotevent = app.getPlotEvent()
         

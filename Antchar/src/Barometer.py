@@ -1,3 +1,4 @@
+from src import *
 import time
 import numpy as np
 from Adafruit_BME280 import *
