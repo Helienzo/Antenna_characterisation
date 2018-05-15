@@ -101,44 +101,44 @@ class window():
             win += "pause, stop, start command to control the flow of the   \n"
             win += "recording. When the recording is paused, use command step \n"
             win += "to record only one samples from the current antenna     \n"
-            win += "Use command step to step through all 3 loops of the antenna.\n"
+            win += "Use command step to step through all 3 loops of the antenna."
 
         elif(help_command == "quit"):
             win = "quit: exits the current session and closes the           \n"
-            win += "terminal window                                         \n"
+            win += "terminal window                                         "
 
         elif(help_command == "plot"):
             win = "plot $filename.txt plots the recorded file with name     \n"
-            win +="$filename.txt                                            \n"
+            win +="$filename.txt                                            "
 
         elif(help_command == "recordsamples"):
             win = "recordsamples $filename.txt $number, records $number of \n"
-            win += "measurements with filename $filename.txt                \n"
+            win += "measurements with filename $filename.txt                "
 
         elif(help_command == "recordtime"):
             win = "recordtime $filename.txt $time, records the specified   \n"
-            win += "time $time in minutes with filename $filename.txt       \n"
+            win += "time $time in minutes with filename $filename.txt       "
 
         elif(help_command == "val"):
             win =   "returns the signal strength that the SDR-dongle is     \n"
-            win +=  "measuring in dBm                                       \n"
+            win +=  "measuring in dBm                                       "
 
         elif(help_command == "setcfreq"):
-            win =   "Changes the center frequency for the SDR-dongle         \n"
+            win =   "Changes the center frequency for the SDR-dongle         "
 
         elif(help_command == "getcfreq"):
-            win =   "returns the current center frequency for the SDR-dongle \n"
+            win =   "returns the current center frequency for the SDR-dongle "
 
         elif(help_command == "setloop"):
             win =   "Can either be auto (setloop auto) or a specific         \n"
             win +=  "loop (e.g. setloop 1 for loop 1. There is no way to     \n"
             win +=  "turn off auto at the moment other than just choosing a  \n"
-            win +=  "specific loop.                                          \n"
+            win +=  "specific loop.                                          "
 
         elif(help_command == "calibration"):
             win = "Should only be used without real measurement signal.      \n"
             win += "Records 100 samples and finds the top value and sets    \n"
-            win += "the noise floor to that value                           \n"
+            win += "the noise floor to that value                           "
 
         elif(help_command == "setup"):
             win = "Opens the setup menu where all parameters are listed. \n"
@@ -154,7 +154,7 @@ class window():
             win += "Update manually updates the DSP process if it is locked \n"
             win += "Vecsave either saves or doesn't save the FFT vector     \n"
             win += "Delay sets a delay between the DSP loops when it is running \n"
-            win += "automatically.                                          \n"
+            win += "automatically.                                          "
 
         elif(help_command) == "plot":
             win += "It is possible to plot or clear a current plot with this \n"
@@ -162,7 +162,7 @@ class window():
             win += "plot clear - Clears the current plot window             \n"
             win += "plot close - Closes the current plot window             \n"
             win += "plot vec $filename - plots the FFT vector from $file    \n"
-            win += "plot $filename -    plots the measurement values from $file \n"
+            win += "plot $filename -    plots the measurement values from $file"
         else:
             raise SyntaxError
         return win

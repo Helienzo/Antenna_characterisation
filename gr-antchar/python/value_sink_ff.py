@@ -26,9 +26,10 @@ class value_sink_ff(gr.sync_block):
     """
     Stores incoming values in an external data class 
     """
-    def __init__(self, data,var):
+    def __init__(self, data,var,event):
         self.data = data
         self.var = var
+        self.event = event
         gr.sync_block.__init__(self,
             name="value_sink_ff",
             in_sig=[numpy.float32],
@@ -37,6 +38,7 @@ class value_sink_ff(gr.sync_block):
 
     def work(self, input_items, output_items):
         in0 = input_items[0]
+        self.event.set()
         self.data.setData(in0[0],self.var)
         # <+signal processing here+>
         return len(input_items[0])

@@ -167,7 +167,8 @@ class Application():
                 except ValueError:
                     self.info_string = 'Undefined parameter: ' + str(command_queue[1])
             else:
-                self.info_string = 'must choose auto or specific loop'
+                #self.info_string = 'must choose auto or specific loop'
+                self.info_string = self.getHelpString(command_queue[0])
 
             self.pars.set_status_false()
             self.pars.empty_queue()
@@ -194,7 +195,7 @@ class Application():
                         self.info_string = 'undefined value: ' + str(command_queue[1])
                 else:
                     #self.info_string = "record command must have a name input" # Change to helpfunction
-                    self.info_string = self.window.help_string("record")
+                    self.info_string = self.window.help_string("recordsamples")
             else:
                 self.info_string = "Already recording"
             self.pars.set_status_false()
@@ -208,7 +209,7 @@ class Application():
                     except ValueError:
                         self.info_string = 'undefined value: ' + str(command_queue[2])
                 else:
-                    self.info_string = "record command must have a value and name input" # Change to helpfunction
+                    self.info_string = self.getHelpString(command_queue[0])
             else:
                 self.info_string = "Already recording"
             self.pars.set_status_false()
@@ -233,7 +234,7 @@ class Application():
                     except ValueError:
                         self.info_string = 'undefined value: ' + str(command_queue[2])
                 else:
-                    self.info_string = "record command must have a value and name input" # Change to helpfunction
+                    self.info_string = self.getHelpString(command_queue[0])
             else:
                 self.info_string = "Already recording"
             self.pars.set_status_false()
@@ -255,7 +256,7 @@ class Application():
                     else:
                         self.info_string = "undefined mode command: " + str(command_queue[1])
                 else:
-                    self.info_string = "rec needs either start, stop or pause"
+                    self.info_string = self.getHelpString(command_queue[0])
             else:
                 self.info_string = "Not recording"
             self.pars.set_status_false()
@@ -293,7 +294,8 @@ class Application():
                 else:
                     self.info_string = 'undefined mode command: ' + str(command_queue[1])
             else:
-                self.info_string = "Specify a command" # Change to helpfunction
+                self.info_string = "Specify a command. Look at help function \
+                                    if you dont know how this function works"
             self.pars.set_status_false()
             self.pars.empty_queue()
 
@@ -322,7 +324,7 @@ class Application():
                     except IOError:
                         self.info_string = 'undefined filename: ' + str(command_queue[1])
             else:
-                self.info_string = "Specify a filename" # Change to helpfunction
+                self.info_string = self.getHelpString(command_queue[0])
             self.pars.set_status_false()
             self.pars.empty_queue()
 
@@ -469,3 +471,8 @@ class Application():
                 self.config.load("default.txt")
             except IOError:
                 self.info_string = 'default.txt setup file does not exist'
+
+    def getHelpString(self, function_string):
+        return "Something went wrong when using " + function_string \
+                             + ". Here is the help function: \n \n" + \
+                             self.window.help_string(function_string)
