@@ -24,7 +24,7 @@ class dsp():
         self.controller_thread.start()
         self.currentLoop = 0
         self.autoSwitch = True
-
+        
 
     def endProcess(self):
         self.dspProcess.stop()
@@ -52,7 +52,7 @@ class dsp():
                     time.sleep(self.del_time)
                     self.dspProcess.set_select(0)
                     self.processEvent.clear()
-
+                    
                 else:
                     self.processEvent.clear()
 
@@ -68,7 +68,7 @@ class dsp():
 
     def getLockMode(self):
         return not self.auto_run
-
+        
     def update(self):
         self.dspProcess.reset()
         self.dspProcess.start()
@@ -135,3 +135,20 @@ class dsp():
 
     def setTransition(self, transition):
         self.dspProcess.set_transition(transition)
+
+
+
+
+
+#def main():
+#    data = Data()
+#    dspmain = dsp(data)
+#    #print data.getVector()
+
+
+
+
+
+
+#if __name__ == '__main__':
+#    main()

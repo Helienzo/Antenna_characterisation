@@ -27,9 +27,6 @@ class Antenna():
         else:
             self.reset()
 
-    #Pin combinations for the different loops are based on
-    #the Schwarzbeck antenna's documentation
-
     def loopOne(self):
         wpi.digitalWrite(self.pin2,1)
         #time.sleep(0.05)
@@ -66,9 +63,13 @@ class Antenna():
                               #GnuRadio has stored for the current loop
 
         if self.counter > (self.count_nr-1):
+            #print "loop"+ str(self.currLoop)
+            #print "amount"+ str(self.counter)
             self.counter = 0 #resets the counter after a certain value
             if auto != 0:
                 self.loopSwitch() #switch to next loop
+
+        #return self.currLoop
 
     def getCurrentLoop(self):
         return self.currLoop

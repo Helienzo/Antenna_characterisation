@@ -112,11 +112,11 @@ class window():
             win +="$filename.txt                                            \n"
 
         elif(help_command == "recordsamples"):
-            win = "recordsamples $filename.txt $number, records $number of \n"
+            win += "recordsamples $filename.txt $number, records $number of \n"
             win += "measurements with filename $filename.txt                \n"
 
         elif(help_command == "recordtime"):
-            win = "recordtime $filename.txt $time, records the specified   \n"
+            win += "recordtime $filename.txt $time, records the specified   \n"
             win += "time $time in minutes with filename $filename.txt       \n"
 
         elif(help_command == "val"):

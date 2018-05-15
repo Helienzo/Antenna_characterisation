@@ -10,7 +10,6 @@ class Application():
         self.ax1 = ax1
         self.fig = fig
         self.tid = 0
-        self.value = [0] # measurement value
         self.info_string = ""
         self.plotEvent = threading.Event()
         self.dataEvent = dsp.getDataEvent() # Threading event for new value
@@ -18,11 +17,11 @@ class Application():
         self.recEvent = threading.Event() # Threading event for recoding or not
         self.endEvent = endEvent # Threading event for killing the aplication
         self.pars = parser()
+        self.value = [0] # measurment value
         self.rec = s_saver(self.dataEvent,self.recloopEvent,data,self.recEvent)
         self.config = config(self.pos,dsp,self.rec)
         self.centerFrequencyLineNo = 0
         self.vectorRecLineNo = 0
-
         # Initialization of curses application
         self.stdscr = curses.initscr()
         self.stdscr.clear()
@@ -30,14 +29,12 @@ class Application():
         self.stdscr.nodelay(1)
         self.stdscr.keypad(1)
         self.running = True
-        self.Calibration = Calibration(self.data, self.rec
-                                        self.pos, self.recEvent)
+        self.Calibration = Calibration(self.data,self.rec,self.pos,self.recEvent)
 
-        self.window = window(self.stdscr, self.pos, self.dsp,
-                            self.data, self.pars, self.recEvent,
-                            self.rec, self, self.Calibration)
+        self.window = window(self.stdscr,self.pos,self.dsp,self.data,
+                            self.pars,self.recEvent,self.rec,self,self.Calibration)
 
-        #Start the application thread
+        #Start the thread
         self.app_thread =threading.Thread(target=self.app)
         self.app_thread.deamon = True
         self.app_thread.start()

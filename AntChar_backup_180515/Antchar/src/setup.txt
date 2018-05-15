@@ -1,0 +1,9 @@
+This is the setup file. Change the third column and be 
+careful not to remove the space. 
+
+#Center frequency Should be float with , e.g. 95,5 for 95,5 MHz
+centerFrequency = 100 
+
+#Sets if recording vectors or not. Boolean.
+vectorRec = True 
+
