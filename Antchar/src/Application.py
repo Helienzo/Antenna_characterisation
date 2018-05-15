@@ -193,7 +193,8 @@ class Application():
                     except ValueError:
                         self.info_string = 'undefined value: ' + str(command_queue[1])
                 else:
-                    self.info_string = "record command must have a name input" # Change to helpfunction
+                    #self.info_string = "record command must have a name input" # Change to helpfunction
+                    self.info_string = self.window.help_string(command_queue[0])
             else:
                 self.info_string = "Already recording"
             self.pars.set_status_false()
