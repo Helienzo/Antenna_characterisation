@@ -30,7 +30,7 @@ class Application():
         self.stdscr.nodelay(1)
         self.stdscr.keypad(1)
         self.running = True
-        self.Calibration = Calibration(self.data, self.rec
+        self.Calibration = Calibration(self.data, self.rec,
                                         self.pos, self.recEvent)
 
         self.window = window(self.stdscr, self.pos, self.dsp,
