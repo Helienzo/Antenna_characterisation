@@ -13,7 +13,7 @@ class Data():
         self.NF = 0
         self.droneData = []
         self.droneStat = False
-    
+
     #function for other classes to store data in this class
     def setData(self,data,var):
 
@@ -32,7 +32,7 @@ class Data():
 
         elif var == 3:
             self.currentLoop[0] = data
-    
+
     def setDroneData(self,data):
         self.droneData = data
 
@@ -47,11 +47,9 @@ class Data():
 
     def esimateNF(self):
         vec_len = len(self.vector_log)
-
         return self.NF
 
     def setVector(self, inVec,var):
-        #self.vector = inVec
         if var == 0:
             self.vector_log = []
             self.vector_log.extend(inVec)
@@ -88,5 +86,7 @@ class Data():
 
     #summarizes data from the three loops to retrieve final power value
     def polAdder(self,power):
-        res = 10*np.log10(np.sqrt((0.001*(10**(power[0]/10)))**2 + (0.001*(10**(power[1]/10)))**2 + (0.001*(10**(power[2]/10)))**2)*1000)
+        res = 10*np.log10(np.sqrt((0.001*(10**(power[0]/10)))**2 + \
+                                  (0.001*(10**(power[1]/10)))**2 + \
+                                  (0.001*(10**(power[2]/10)))**2)*1000)
         return res

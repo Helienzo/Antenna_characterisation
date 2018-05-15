@@ -14,9 +14,6 @@ class window():
         self._vectorRec = 0
         self._calibrate = calibrate
 
-
-
-
     def update(self,currentWindow):
         if currentWindow == "standard":
             self.update_screen_functions()
@@ -24,15 +21,16 @@ class window():
         elif currentWindow == "setup":
             self.update_screen_setup()
 
-
     def update_screen_functions(self):
         self._stdscr.clear()
         height, width = self._stdscr.getmaxyx()
         record_string = ""
+
         if self._recEvent.isSet():
             record_string = "Recording"
         else:
             record_string = "Not active"
+
         droneData = self._data.getDroneData()
         # Application main info screen 12 rows ------------------------------------------
         win  = "***  Antenna characteriastion aplication   ***\n"
@@ -54,6 +52,57 @@ class window():
 
         # Command history and info screen
         avil_rows = height - 14 - 1 # 14 rows occupied by information at top of string
+
+        command_history = self._pars.get_history()
+        list_length = len(command_history)
+        info_string = self._app.getInfoString()
+        str_length = len(info_string)
+        str_length = int(math.ceil(double(str_length)/width)) # Number of rows in infostring
+        if str_length > 0:
+            self._pars.add_history(info_string.split('\n'))
+        if list_length > 0:
+            i = 0
+            if avil_rows > list_length:
+                i = list_length-1
+            else:
+                i = avil_rows
+            while i > -1:
+                i = i-1
+                tmp_str = command_history[list_length-2-i]
+                str_length = len(tmp_str)
+                str_length = int(math.ceil(double(str_length)/width))
+                if str_length > 1:
+                    i = i - str_length+1
+                self._stdscr.addstr(height-2-str_length-i, 0,str(tmp_str))
+        self._stdscr.addstr(height-1, 0,"# Write command$ "+self._pars.get_full_string()) # Command input
+
+        #Defines the look of the setup screen 
+    def update_screen_setup(self):
+        self._stdscr.clear()
+        height, width = self._stdscr.getmaxyx()
+        record_string = ""
+
+        # Application main info screen 12 rows ------------------------------------------
+        win  = "***  Setup file   ***\n"
+        win += "***  Center frequency: " + str(float(self._dsp.get_c_freq())/float(1e6)) + "            ***\n"
+        win += "***  loopMode        : " + str(self._dsp.getLoopMode())    + " \n"
+        win += "***  loopNr          : " + str(self._dsp.getLoop())        + " \n"
+        win += "***  Lock            : " + str(self._dsp.getLockMode())    + " \n"
+        win += "***  system delay    : " + str(self._dsp.getDelay())       + " \n"
+        win += "***  VecMode         : " + str(self._rec.getVecMode())     + " \n"
+        win += "***  Gps origin      : " + str(self._pos.getSorigin())     + " \n"
+        win += "***  Air pressure    : " + str(self._pos.getOpressure())   + " \n"
+        win += "***  Air temperature : " + str(self._pos.getOtemp())       + " \n"
+        win += "***  FIR decimation  : " + str(self._dsp.getDecimation())  + " \n"
+        win += "***  FIR Cutoff      : " + str(self._dsp.getCutoff())      + " \n"
+        win += "***  FIR transition  : " + str(self._dsp.getTransition())  + " \n"
+        win += "***  To change a value write: set $parameter $value   ***\n"
+        win += "------------------------------------------------------------------\n"
+        self._stdscr.addstr(0,0,win)
+        # -------------------------------------------------------------------------------
+
+        # Command history and info screen
+        avil_rows = height - 17 - 1 # 14 rows occupied by information at top of string
 
         command_history = self._pars.get_history()
         list_length = len(command_history)
@@ -166,53 +215,3 @@ class window():
         else:
             raise SyntaxError
         return win
-
-    def update_screen_setup(self):
-        self._stdscr.clear()
-        height, width = self._stdscr.getmaxyx()
-        record_string = ""
-
-        # Application main info screen 12 rows ------------------------------------------
-        win  = "***  Setup file   ***\n"
-        win += "***  Center frequency: " + str(float(self._dsp.get_c_freq())/float(1e6)) + "            ***\n"
-        win += "***  loopMode        : " + str(self._dsp.getLoopMode())    + " \n"
-        win += "***  loopNr          : " + str(self._dsp.getLoop())        + " \n"
-        win += "***  Lock            : " + str(self._dsp.getLockMode())    + " \n"
-        win += "***  system delay    : " + str(self._dsp.getDelay())       + " \n"
-        win += "***  VecMode         : " + str(self._rec.getVecMode())     + " \n"
-        win += "***  Gps origin      : " + str(self._pos.getSorigin())     + " \n"
-        win += "***  Air pressure    : " + str(self._pos.getOpressure())   + " \n"
-        win += "***  Air temperature : " + str(self._pos.getOtemp())       + " \n"
-        win += "***  FIR decimation  : " + str(self._dsp.getDecimation())  + " \n"
-        win += "***  FIR Cutoff      : " + str(self._dsp.getCutoff())      + " \n"
-        win += "***  FIR transition  : " + str(self._dsp.getTransition())  + " \n"
-        win += "***  To change a value write: set $parameter $value   ***\n"
-        win += "------------------------------------------------------------------\n"
-        self._stdscr.addstr(0,0,win)
-        # -------------------------------------------------------------------------------
-
-        # Command history and info screen
-        avil_rows = height - 17 - 1 # 14 rows occupied by information at top of string
-
-        command_history = self._pars.get_history()
-        list_length = len(command_history)
-        info_string = self._app.getInfoString()
-        str_length = len(info_string)
-        str_length = int(math.ceil(double(str_length)/width)) # Number of rows in infostring
-        if str_length > 0:
-            self._pars.add_history(info_string.split('\n'))
-        if list_length > 0:
-            i = 0
-            if avil_rows > list_length:
-                i = list_length-1
-            else:
-                i = avil_rows
-            while i > -1:
-                i = i-1
-                tmp_str = command_history[list_length-2-i]
-                str_length = len(tmp_str)
-                str_length = int(math.ceil(double(str_length)/width))
-                if str_length > 1:
-                    i = i - str_length+1
-                self._stdscr.addstr(height-2-str_length-i, 0,str(tmp_str))
-        self._stdscr.addstr(height-1, 0,"# Write command$ "+self._pars.get_full_string()) # Command input

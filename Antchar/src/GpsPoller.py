@@ -35,15 +35,12 @@ class position(GpsPoller):
         thread.running = True
 
     def e_rad(self,lat):
-        #a = Equatorial radius (6378.1370 km)
-        #b = Polar radius (6356.7523 km)
-        #e is the eccentricity of the ellipsoid
-        #R' = a * (1 - e^2) / (1 - e^2 * sin^2(lat))^(3/2)
-        a = 6378.1370 # km
-        b = 6356.7523 # km
-        e = 1 - b**2/a**2
+        a = 6378.1370 # Equatorial radius (6378.1370 km)
+        b = 6356.7523 # Polar radius (6356.7523 km)
+        e = 1 - b**2/a**2 #Eccentricinty of the ellipsoid
         R = a*(1 - e)/((1 - e*np.sin(lat)**2)**(3/2))
         return R*1000
+        
     def spherical_to_cartisian(self,s):
         c = [0,0,0]
         c[0] = s[0]*np.sin(s[1])*np.cos(s[2])
@@ -184,54 +181,22 @@ class position(GpsPoller):
             self.Zcord = self.r1[2]
             time.sleep(0.1)
 
-    def test(self,filename,start):
-        self.s_coord[1] = np.deg2rad(float(start[0]))
-        self.s_coord[2] = np.deg2rad(float(start[1]))
-        self.temp = self.bar.readTemperature()
-        self.pressure = self.bar.readPressure()
-        self.set_origin()
-        print self.c_origin[1]
-        print self.c_origin[2]
-        wFile = open("xyz.txt", "w")
-        myFile = open(str(filename), "r")
-        for line in myFile:
-            coord = line.split(" ")
-            self.theta = float(coord[8])
-            self.phi = float(coord[9])
-            self.temp = self.bar.readTemperature()
-            self.pressure = self.bar.readPressure() # Get pressure in heteropascal
-
-            self.s_coord = [self.R, np.deg2rad(self.theta), np.deg2rad(self.phi)] # get spherical gps coordinates
-            self.c_coord = self.spherical_to_cartisian(self.s_coord) # convert from spherical to cartesian
-            self.v1 = self.vector_subtraction(self.c_origin,self.c_coord) # get vector from origin to current position
-            self.h1 = self.vector_scalar_mult(self.vector_normalize(self.c_coord),self.calcAltitude()) # generate hight above ground along new coordinate
-            self.r1 = self.vector_subtraction(self.v1,self.h1) # calculate the r vector from origin to current postion
-
-            self.r1 = self.matrix_vec_mult(self.t_mat,self.r1)
-            self.Xcord = self.r1[0]
-            self.Ycord = self.r1[1]
-            self.Zcord = self.r1[2]
-
-            wFile.write("{0} {1} {2} \n".format(self.Xcord,self.Ycord, self.Zcord))
-            #time.sleep(0.1)
-        print self.s_origin
-        myFile.close()
-        wFile.close()
-        print "Done"
-
     def set_origin(self):
 
         self.R = self.e_rad(self.theta) # Calculate earth radious at current latitude
         self.s_coord[0] = self.R # Set the newly calculated Radius as R
         self.s_origin = self.s_coord # Origin of GPS set as current gps position
         self.c_origin = self.spherical_to_cartisian(self.s_origin) # origin in cartesian coord
+
         # Make a basis
         self.z_o = self.vector_normalize(self.c_origin) # Normal vector to the plane
-        self.x_o = self.vector_normalize([1,1,-(self.z_o[0]+self.z_o[1])/self.z_o[2]])
+        self.x_o = self.vector_normalize([1, 1, -(self.z_o[0]+self.z_o[1])/self.z_o[2]])
         self.y_o = self.vector_normalize(self.cross_prod(self.z_o,self.x_o))
+
         # Make a transition matrix
         self.t_mat = self.gen_base_trans_mat(self.x_o, self.y_o, self.z_o) # From local to earth
         self.t_mat = np.ndarray.tolist(np.linalg.inv(self.t_mat)) #from earth to local
+
         self.o_pressure = self.pressure # set origin pressure
         self.o_temp = self.temp  # Set origin temperature
 
@@ -309,34 +274,5 @@ class position(GpsPoller):
     def get_Z(self):
         return self.Zcord
 
-
-
     def stop(self): #starts the thread that collects data in the background
         print ""
-
-def main():
-    fig = plt.figure()
-    ax1 = fig.gca(projection='3d')
-    running = True
-    pos = position()
-    start = [59.884868776,17.6804052257]
-    #pos.set_origin()
-    try:
-        x = []
-        y = []
-        z = []
-        pos.test("coords.txt",start)
-        myfile = open("xyz.txt", "r")
-        for line in myfile:
-            coord = line.split(" ")
-            x.append(float(coord[0]))
-            y.append(float(coord[1]))
-            z.append(float(coord[2]))
-        plot = ax1.plot(x,y,z,label = 'parametric curve')
-        plot = ax1.plot([0,100],[0,100],[0,100],label = 'parametric curve')
-        plt.show()
-    except KeyboardInterrupt, SystemExit:
-        running = False
-
-if __name__ == '__main__':
-    main()

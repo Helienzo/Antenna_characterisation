@@ -31,17 +31,11 @@ class dsp():
         self.dspProcess.wait()
 
     def controller(self):
-        #self.dspProcess.set_select(1)
         self.dspProcess.start()
         time.sleep(2)
-        #self.processEvent.set()
         while self.endEvent.isSet() != True:
             if self.auto_run == True:
-                #self.dspProcess.reset()
-                #self.dspProcess.start()
-                #self.dspProcess.wait()
                 self.processEvent.wait()
-
                 if self.data.getVector(1)[0] != 0:
                     self.dspProcess.set_select(1) # Null source
                     self.data.setData(self.antenna.getCurrentLoop(),3)
@@ -76,7 +70,6 @@ class dsp():
         self.data.setData(self.antenna.getCurrentLoop(),3)
         self.dataEvent.set()
         self.loop()
-        #time.sleep(3)
 
     def delay(self,del_time):
         self.del_time = del_time
